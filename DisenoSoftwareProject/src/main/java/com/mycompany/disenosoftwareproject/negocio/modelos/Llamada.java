@@ -16,4 +16,16 @@ public class Llamada {
     private Fecha fechaFin;
     private Hora horaFin;
     private String nombreComunicante;
+    private Empleado atiende;
+    
+    public Llamada(int id, String numeroTelefonoOrigen, Fecha fechaInicio, Hora horaInicio, Fecha fechaFin, Hora horaFin, String nombreComunicante, Empleado empleado) {
+        this.id = id;
+        this.numeroTelefonoOrigen = numeroTelefonoOrigen;
+        this.fechaInicio = fechaInicio;
+        this.horaInicio = horaInicio;
+        this.fechaFin = fechaFin;
+        this.horaFin = horaFin;
+        this.nombreComunicante = nombreComunicante;
+        this.atiende = empleado;
+    }
 }

@@ -10,4 +10,11 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
  */
 public class LlamadaDeAsegurado extends Llamada{
     private String descripcionEmergencia;
+    private Asegurado paciente;
+
+    public LlamadaDeAsegurado(int id, String numeroTelefonoOrigen, Fecha fechaInicio, Hora horaInicio, Fecha fechaFin, Hora horaFin, String nombreComunicante, Empleado empleado, String descripcionEmergencia, Asegurado paciente){
+        super(id, numeroTelefonoOrigen, fechaInicio, horaInicio, fechaFin, horaFin, nombreComunicante, empleado);
+        this.descripcionEmergencia = descripcionEmergencia;
+        this.paciente = paciente;
+    }
 }

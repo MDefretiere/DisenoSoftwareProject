@@ -24,4 +24,8 @@ public class TurnoDeOperativo {
         this.conductorEnTurno = conductorEnTurno;
         this.medicoEnTurno = medicoEnTurno;
     }
+    
+    public Fecha getFechaTurno(){
+        return fechaTurno;
+    }
 }

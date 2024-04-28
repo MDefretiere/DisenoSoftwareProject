@@ -11,6 +11,7 @@ package com.mycompany.disenosoftwareproject;
 public class DisenoSoftwareProject {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Sistema s = new Sistema();
+        s.startApp();
     }
 }

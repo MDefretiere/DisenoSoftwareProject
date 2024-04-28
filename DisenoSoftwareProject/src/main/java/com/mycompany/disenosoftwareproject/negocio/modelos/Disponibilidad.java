@@ -21,4 +21,12 @@ public class Disponibilidad {
         this.fechaInicio = fechaInicio;
         this.fechaFin = null;
     }
+    
+    public Fecha getFechaInicio(){
+        return fechaInicio;
+    }
+    
+    public Fecha getFechaFin(){
+        return fechaFin;
+    }
 }

@@ -10,21 +10,25 @@ import java.util.List;
  *
  * @author defre
  */
-public class TurnoDeOperador {
+public class TurnoDeOperador{
     private Fecha fechaCreacion;
     private Fecha fechaTurno;
     private TipoDeTurnoOperador tipoDeTurno;
-    private List<Empleado> enTurno;
+    private List<Operador> enTurno;
 
-    public TurnoDeOperador(Fecha fechaCreacion, Fecha fechaTurno, TipoDeTurnoOperador tipoDeTurno, List<Empleado> e) {
+    public TurnoDeOperador(Fecha fechaCreacion, Fecha fechaTurno, TipoDeTurnoOperador tipoDeTurno, List<Operador> e) {
         this.fechaCreacion = fechaCreacion;
         this.fechaTurno = fechaTurno;
         this.tipoDeTurno = tipoDeTurno;
         enTurno = e;
     }
 
-    public List<Empleado> getOperadores(){
+    public List<Operador> getOperadores(){
         return enTurno;
+    }
+    
+    public Fecha getFechaTurno(){
+        return fechaTurno;
     }
     
     

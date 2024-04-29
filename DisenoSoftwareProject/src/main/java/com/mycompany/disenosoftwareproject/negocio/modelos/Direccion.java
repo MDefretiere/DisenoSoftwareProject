@@ -4,11 +4,14 @@
  */
 package com.mycompany.disenosoftwareproject.negocio.modelos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author defre
  */
-class Direccion {
+public class Direccion {
     private int numero;
     private String nombreVia;
     private String otros;
@@ -32,5 +35,16 @@ class Direccion {
         this.localidad = localidad;
         this.provincia = provincia;
         this.otros = "";
+    }
+    
+    public static Direccion convertirDireccionSQL(ResultSet resultSet) throws SQLException {
+        int numero = resultSet.getInt("numero");
+        String nombreVia = resultSet.getString("nombre_via");
+        String otros = resultSet.getString("otros");
+        String codigoPostal = resultSet.getString("codigo_postal");
+        String localidad = resultSet.getString("localidad");
+        String provincia = resultSet.getString("provincia");
+        
+        return new Direccion(numero, nombreVia, otros, codigoPostal, localidad, provincia);
     }
 }

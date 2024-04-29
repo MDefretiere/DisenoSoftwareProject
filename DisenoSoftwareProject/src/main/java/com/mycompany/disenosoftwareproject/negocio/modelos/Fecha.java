@@ -4,6 +4,8 @@
  */
 package com.mycompany.disenosoftwareproject.negocio.modelos;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author defre
@@ -35,5 +37,13 @@ public class Fecha {
             return Integer.compare(this.mes, otraFecha.mes);
         }
         return Integer.compare(this.dia, otraFecha.dia);
+    }
+    
+    
+    public static Fecha convertirDateSQLToLocalDate(java.sql.Date dateSQL) {
+        int year = dateSQL.getYear() + 1900; // Ajoutez 1900 à l'année car java.sql.Date utilise un an - 1900
+        int month = dateSQL.getMonth() + 1; // Ajoutez 1 au mois car java.sql.Date commence à compter les mois à partir de 0
+        int day = dateSQL.getDate();
+        return new Fecha(day, month, year);
     }
 }

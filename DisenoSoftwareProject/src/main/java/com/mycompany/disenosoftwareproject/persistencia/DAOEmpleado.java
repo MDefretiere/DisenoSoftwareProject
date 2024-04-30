@@ -13,6 +13,7 @@ import com.mycompany.disenosoftwareproject.negocio.modelos.Medico;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Operador;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Rol;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,16 +32,15 @@ public class DAOEmpleado {
 
     public List<Empleado> obtenirTousLesEmployes() {
         List<Empleado> listeEmployes = new ArrayList<>();
-        String query = "SELECT EMPLEADOS.NIF as NIF, EMPLEADOS.PASSWORD, EMPLEADOS.FECHAINICIOENEMPRESA, PERSONAS.NOMBRE, PERSONAS.APELLIDOS, PERSONAS.FECHADENACIMIENTO, PERSONAS.TELEFONO, TIPOSDEROL.NOMBRETIPO \n" +
+        String query = "SELECT EMPLEADOS.NIF as NIF, EMPLEADOS.PASSWORD, EMPLEADOS.FECHAINICIOENEMPRESA, PERSONAS.NOMBRE, PERSONAS.APELLIDOS, PERSONAS.FECHADENACIMIENTO, PERSONAS.TELEFONO, TIPOSDEROL.NOMBRETIPO, DIRECCIONES.NOMBREDELAVIA, DIRECCIONES.NUMERO, DIRECCIONES.OTROS, DIRECCIONES.CODIGOPOSTAL, DIRECCIONES.LOCALIDAD, DIRECCIONES.PROVINCIA \n" +
             "FROM PERSONAS, EMPLEADOS, TIPOSDEROL, ROLESENEMPRESA \n" +
-            "WHERE PERSONAS.NIF=EMPLEADOS.NIF, TIPOSDEROL.IDTIPO=ROLESENEMPRESA.IDTIPO, ROLESENEMPRESA.NIF=EMPLEADOS.NIF;";
+            "WHERE PERSONAS.NIF=EMPLEADOS.NIF, TIPOSDEROL.IDTIPO=ROLESENEMPRESA.IDTIPO, ROLESENEMPRESA.NIF=EMPLEADOS.NIF, PERSONAS.NIF=DIRECCIONES.ID;";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
                 PreparedStatement statement = conn.prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                // Créer un objet Empleado à partir des données de la base de données
                 Empleado employe = mapperResultSetToEmpleado(resultSet);
                 listeEmployes.add(employe);
             }
@@ -90,24 +90,22 @@ public class DAOEmpleado {
     }
 
     
-    public void enregistrerEmploye(Empleado employe) {
-        /*
-        String query = "INSERT INTO empleados ( ) VALUES ()";
-        
-        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
-                PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setString(1, employe.getNombre());
-            statement.setString(2, employe.getApellidos());
-            // Autres valeurs...
-            
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }*/
+    public void enregistrerEmploye(Empleado employe) throws SQLException {
+        String sql = "INSERT INTO employe (nif, nombre, apellidos, fechanacimiento, telefono) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, employe.getApellidos());
+            pstmt.setString(2, employe.getNombre());
+            java.sql.Date dateNaissance = new java.sql.Date(employe.getFechaNacimiento().getTime());
+            pstmt.setDate(3, dateNaissance);
+            pstmt.setString(4, employe.getNif());
+            pstmt.setString(5, employe.getTelefono());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    
     public Empleado obtenirEmployeParId(int id) {
         Empleado employe = null;
         String query = "SELECT * FROM empleados WHERE id = ?";

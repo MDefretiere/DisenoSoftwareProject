@@ -5,6 +5,8 @@
 package com.mycompany.disenosoftwareproject;
 
 import com.mycompany.disenosoftwareproject.negocio.modelos.*;
+import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 
@@ -15,8 +17,11 @@ import java.util.ArrayList;
 public class Sistema {
     ArrayList<TurnoDeOperador> turnosDeOperador = new ArrayList<TurnoDeOperador>();
     ArrayList<Operador> operadores = new ArrayList<Operador>();
-    public void startApp(){
-        
+    public void startApp() throws SQLException{
+        Empleado e = new Empleado("Matthieu", "Defretiere", new Fecha(16, 04, 2003), "010204564", new Direccion(5, "Oui", "Non", "Peut-erte", "oui", "non"), "064056533", new Fecha(16, 04, 2003), new Gerente(new Fecha(16, 04, 2003)));
+        DAOEmpleado daoEmpleado = new DAOEmpleado();
+        daoEmpleado.enregistrerEmploye(e);
+        System.out.println("Employé enregistré");
     }
     /*
     public void introduceCredenciales(String login, String password){

@@ -57,4 +57,20 @@ public class Empleado extends Persona {
         }
         return false;
     }
+    
+    public Rol getRol() {
+        return rol;
+    }
+
+    public static String getLogin() {
+        return login;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
+    public ArrayList<Disponibilidad> getHistoricoDeDisponiblidad() {
+        return historicoDeDisponiblidad;
+    }
 }

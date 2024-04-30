@@ -5,6 +5,8 @@
 package com.mycompany.disenosoftwareproject.negocio.modelos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  *
@@ -45,5 +47,10 @@ public class Fecha {
         int month = dateSQL.getMonth() + 1; // Ajoutez 1 au mois car java.sql.Date commence à compter les mois à partir de 0
         int day = dateSQL.getDate();
         return new Fecha(day, month, year);
+    }
+    
+    public long getTime() {
+        LocalDateTime localDateTime = LocalDate.of(ano, mes, dia).atStartOfDay();
+        return localDateTime.toEpochSecond(ZoneOffset.UTC) * 1000;
     }
 }

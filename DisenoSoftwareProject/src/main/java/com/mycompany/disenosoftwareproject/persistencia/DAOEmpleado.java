@@ -13,7 +13,6 @@ import com.mycompany.disenosoftwareproject.negocio.modelos.Medico;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Operador;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Rol;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

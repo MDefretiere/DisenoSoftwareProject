@@ -4,6 +4,7 @@
  */
 package com.mycompany.disenosoftwareproject.negocio.modelos;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,6 +12,10 @@ import java.util.List;
  * @author defre
  */
 public class TurnoDeOperador{
+
+    private static List<TurnoDeOperador> DAOTurnoDeOperador(Date fecha) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     private Fecha fechaCreacion;
     private Fecha fechaTurno;
     private TipoDeTurnoOperador tipoDeTurno;
@@ -31,5 +36,9 @@ public class TurnoDeOperador{
         return fechaTurno;
     }
     
+    public static List<TurnoDeOperador> getTurnosPorFecha(Date fecha){
+        List<TurnoDeOperador> list = DAOTurnoDeOperador(fecha);
+        return(list);
+    }
     
 }

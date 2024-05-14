@@ -6,6 +6,9 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -53,4 +56,28 @@ public class Direccion {
         
         return new Direccion(numero, nombreVia, otros, codigoPostal, localidad, provincia);
     }
+    
+    public JsonObject toJson() {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+            .add("numero", numero)
+            .add("nombreVia", nombreVia)
+            .add("otros", "")
+            .add("codigoPostal", codigoPostal)
+            .add("localidad", localidad)
+            .add("provincia", provincia);
+
+        return jsonBuilder.build();
+    }
+    
+    public static Direccion fromJson(JsonObject jsonDireccion) {
+        int numero = jsonDireccion.getInt("numero");
+        String nombreVia = jsonDireccion.getString("nombreVia");
+        String otros = jsonDireccion.getString("otros", ""); // Utilisez la valeur par défaut si "otros" n'est pas présente dans le JSON
+        String codigoPostal = jsonDireccion.getString("codigoPostal");
+        String localidad = jsonDireccion.getString("localidad");
+        String provincia = jsonDireccion.getString("provincia");
+
+        return new Direccion(numero, nombreVia, otros, codigoPostal, localidad, provincia);
+    }
+
 }

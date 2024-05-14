@@ -7,6 +7,8 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 /**
@@ -25,11 +27,7 @@ public class Fecha {
     }
     
     public boolean entreLasDos(Fecha f1, Fecha f2){
-        if ((this.compareTo(f1) >= 0) && (this.compareTo(f2) <= 0)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.compareTo(f1) >= 0) && (this.compareTo(f2) <= 0);
     }
     
     public int compareTo(Fecha otraFecha) {
@@ -70,5 +68,27 @@ public class Fecha {
     @Override
     public String toString(){
         return ""+dia+"/"+mes+"/"+ano;
+    }
+    
+    public Fecha diaAnterior(){
+        LocalDate date = LocalDate.of(ano, mes, dia);
+        LocalDate previousDay = date.minusDays(1);
+        return new Fecha(previousDay.getDayOfMonth(), previousDay.getMonthValue(), previousDay.getYear());
+    }
+
+    public Fecha proximoDia() {
+        LocalDate date = LocalDate.of(ano, mes, dia);
+        LocalDate previousDay = date.plusDays(1);
+        return new Fecha(previousDay.getDayOfMonth(), previousDay.getMonthValue(), previousDay.getYear());    
+    }
+    
+    public static Fecha parseFecha(String dateStr) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(dateStr, formatter);
+            return new Fecha(localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 }

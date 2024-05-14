@@ -26,7 +26,6 @@ public class CtrlVistaModificarOperadorEnTurno {
         else{
             Fecha fecha = Fecha.convertirLocalDateToFecha(date);
             List<Empleado> list = ControladorCUModificarOperadorEnTurno.getOperadoresEnTurnosPorFecha(fecha);
-            System.out.println(list);
             return list;
         }
     }

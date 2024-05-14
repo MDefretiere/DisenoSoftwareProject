@@ -7,6 +7,8 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 
 /**
  *
@@ -22,7 +24,7 @@ public class Empleado extends Persona {
     
     private static String password;
     
-    private ArrayList<Disponibilidad> historicoDeDisponiblidad = new ArrayList<Disponibilidad>();
+    private ArrayList<Disponibilidad> historicoDeDisponiblidad = new ArrayList<>();
 
     public Empleado(String nombre, String apellidos, Fecha fechaNacimiento, String nif, Direccion direccion, String telefono, Fecha fechaInicioEnEmpresa, Rol rol) {
         super(nombre, apellidos, fechaNacimiento, nif, direccion, telefono);
@@ -76,18 +78,54 @@ public class Empleado extends Persona {
         return historicoDeDisponiblidad;
     }
     
-    public static List<Empleado> getOperadoresDisponibles(Fecha fechaTurno) {
-        List<Empleado> listDispo = new ArrayList<>();
-        List<Empleado> allEmpleados = DAOEmpleado.getAllEmpleados();
-        /*
-        for(Empleado e : allEmpleados){
-            if(e.isDisponible(fechaTurno)){
-                listDispo.add(e);
-            }
+    public static List<Empleado> getAllEmpleados() throws Exception {
+        List<Empleado> empleados = new ArrayList<>();
+        JsonObject jsonAllEmpleados = DAOEmpleado.getAllEmpleados();
+        JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
+
+        for (int i = 0; i < jsonEmpleadosArray.size(); i++) {
+            JsonObject jsonEmpleado = jsonEmpleadosArray.getJsonObject(i);
+            Empleado empleado = jsonToEmpleado(jsonEmpleado);
+            empleados.add(empleado);
         }
-*/
-        ////FAIRE LA LOGIQUE DES DISPONIBILITES
-        listDispo.add(allEmpleados.get(0));
-        return listDispo;    
+
+        return empleados;
     }
+
+    public static Empleado jsonToEmpleado(JsonObject jsonEmpleado) throws Exception {
+        String nif = jsonEmpleado.getString("nif");
+        String nombre = jsonEmpleado.getString("nombre");
+        String apellidos = jsonEmpleado.getString("apellidos");
+        Fecha fechaNacimiento = Fecha.parseFecha(jsonEmpleado.getString("fechaNacimiento"));
+        Direccion direccion = Direccion.fromJson(jsonEmpleado.getJsonObject("direccion"));
+        String telefono = jsonEmpleado.getString("telefono");
+        Fecha fechaInicioEnEmpresa = Fecha.parseFecha(jsonEmpleado.getString("fechaInicioEnEmpresa"));
+
+        JsonObject jsonRol = jsonEmpleado.getJsonObject("rol");
+        String nombreRol = jsonRol.getString("rol");
+        String fechaInicioEnPuestoString = jsonRol.getString("fechaInicioEnPuesto");
+        Fecha fechaInicioEnPuesto = Fecha.parseFecha(fechaInicioEnPuestoString);
+
+        Rol rol;
+        switch(nombreRol){
+            case "Gerente":
+                rol = new Gerente(fechaInicioEnPuesto);
+                break;
+            case "Conductor":
+                rol = new Conductor(fechaInicioEnPuesto);
+                break;
+            case "Operador":
+                rol = new Operador(fechaInicioEnPuesto);
+                break;
+            case "Medico":
+                rol = new Medico(fechaInicioEnPuesto);
+                break;
+            default:
+                throw new Exception("Error rol del operador");   
+        }
+
+        return new Empleado(nombre, apellidos, fechaNacimiento, nif, direccion, telefono, fechaInicioEnEmpresa, rol);
+    }
+
+
 }

@@ -7,6 +7,7 @@ package com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaModificarOperadorEnTurno;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
+import com.mycompany.disenosoftwareproject.negocio.modelos.TipoDeTurnoOperador;
 import com.mycompany.disenosoftwareproject.negocio.modelos.TurnoDeOperador;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,11 +22,12 @@ public class ControladorCUModificarOperadorEnTurno {
     private static Empleado empleadoACambiar;
     private static Empleado nuevoEmpleado;
     private static List<Empleado> listOperadoresEnTurno = new ArrayList<>();
-    private static List<Empleado> listOperadoresDispo;
+    private static List<Empleado> listOperadoresDispo = new ArrayList<>();
     private static TurnoDeOperador turnoAModificar;
     private static List<TurnoDeOperador> listTurnosPorFecha = new ArrayList<>();
+    private static List<Empleado> allEmpleado;
     
-    public static List<Empleado> getOperadoresEnTurnosPorFecha(Fecha fecha) throws SQLException{
+    public static List<Empleado> getOperadoresEnTurnosPorFecha(Fecha fecha) throws SQLException, Exception{
         listTurnosPorFecha.clear();
         listOperadoresEnTurno.clear();
         listTurnosPorFecha = TurnoDeOperador.getTurnosPorFecha(fecha);
@@ -38,12 +40,14 @@ public class ControladorCUModificarOperadorEnTurno {
         return (listOperadoresEnTurno);
     } 
 
-    public static List<Empleado> getOperadoresDisponibles(String idOperador) {
+    public static List<Empleado> getOperadoresDisponibles(String idOperador) throws SQLException, Exception {
+        allEmpleado = Empleado.getAllEmpleados();
         for(Empleado e : listOperadoresEnTurno){
             if(e.getNif().equals(idOperador)){
                 empleadoACambiar = e;
             }
         }
+        //Get el turno donde hay el empleado a modificar
         for(TurnoDeOperador t : listTurnosPorFecha){
             for(Empleado e : t.getListOperador()){
                 if(e.getNif().equals(empleadoACambiar.getNif())){
@@ -51,7 +55,35 @@ public class ControladorCUModificarOperadorEnTurno {
                 }
             }
         }
-        listOperadoresDispo = Empleado.getOperadoresDisponibles(fechaTurno);
+        listOperadoresDispo.clear();
+        //Get turnos a comprobar para los operadores disponibles
+        List<TurnoDeOperador> turnoAComprobar = listTurnosPorFecha;
+        if(!TurnoDeOperador.getTurnosPorFecha(fechaTurno.diaAnterior()).isEmpty()){
+            TurnoDeOperador ultimoTurnoDiaAnterior = TurnoDeOperador.getTurnosPorFecha(fechaTurno.diaAnterior()).get(TurnoDeOperador.getTurnosPorFecha(fechaTurno.diaAnterior()).size()-1);
+            if(ultimoTurnoDiaAnterior.getTipo()==TipoDeTurnoOperador.DeNoche23){
+                turnoAComprobar.add(ultimoTurnoDiaAnterior);
+            }
+        }
+        if(!TurnoDeOperador.getTurnosPorFecha(fechaTurno.proximoDia()).isEmpty()){
+            TurnoDeOperador primeroTurnoProximoDia = TurnoDeOperador.getTurnosPorFecha(fechaTurno.proximoDia()).get(0);
+            if(primeroTurnoProximoDia.getTipo()==TipoDeTurnoOperador.DeManana7){
+                turnoAComprobar.add(primeroTurnoProximoDia);
+            }
+        }
+        //Anadir Empleados disponibles
+        for(Empleado e : allEmpleado){
+            boolean dispo=true;
+            for(TurnoDeOperador t : turnoAComprobar){
+                for(Empleado test : t.getListOperador()){
+                    if(e.getNif().equals(test.getNif())){
+                        dispo=false;
+                    }
+                }
+            }
+            if(dispo){
+                listOperadoresDispo.add(e);
+            }
+        }
         return listOperadoresDispo;
     }
 

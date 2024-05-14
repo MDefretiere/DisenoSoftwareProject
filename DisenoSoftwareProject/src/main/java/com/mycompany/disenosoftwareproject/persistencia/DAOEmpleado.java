@@ -19,6 +19,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -29,62 +33,63 @@ public class DAOEmpleado {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static List<Empleado> getAllEmpleados() {
-        List<Empleado> listEmpleados = new ArrayList<>();
+    public static JsonObject getAllEmpleados() {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
-                        "FROM EMPLEADO " +
-                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
-                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL ";
+                       "FROM EMPLEADO " +
+                       "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                       "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL ";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
-                PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                listEmpleados.add(mapperResultSetToEmpleado(resultSet));
+            while (resultSet.next()) {
+                arrayBuilder.add(mapperResultSetToEmpleado(resultSet));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return listEmpleados;
+        JsonObjectBuilder resultBuilder = Json.createObjectBuilder();
+        resultBuilder.add("empleados", arrayBuilder);
+
+        return resultBuilder.build();
     }
 
+
     // Mapping ResultSet to Empleado
-    private static Empleado mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
+    private static JsonObject mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
         String nombre = resultSet.getString("nombre");
         String apellidos = resultSet.getString("apellido");
         String nif = resultSet.getString("NIFCIF");
-        String fechaNacimientoString = resultSet.getString("fechaNacimiento");
-        java.sql.Date fechaNacimientoSQL = java.sql.Date.valueOf(fechaNacimientoString);
-        Fecha fechaNacimiento = Fecha.convertirDateSQLToLocalDate(fechaNacimientoSQL);
+        String fechaNacimiento = resultSet.getDate("fechaNacimiento").toString();
         Direccion direccion = Direccion.convertirDireccionSQL(resultSet);
         String telefono = resultSet.getString("telefono");
-        String fechaInicioEnEmpresaString = resultSet.getString("fechaINICIOENEMPRESA");
-        java.sql.Date fechaInicioEnEmpresaSQL = java.sql.Date.valueOf(fechaInicioEnEmpresaString);
-        Fecha fechaInicioEnEmpresa = Fecha.convertirDateSQLToLocalDate(fechaInicioEnEmpresaSQL);
-        String fechaInicioEnPuestoString = resultSet.getString("COMIENZOENROL");
-        java.sql.Date fechaInicioEnPuestoSQL = java.sql.Date.valueOf(fechaInicioEnPuestoString);
-        Fecha fechaInicioEnPuesto = Fecha.convertirDateSQLToLocalDate(fechaInicioEnPuestoSQL);
+        String fechaInicio = resultSet.getDate("fechaInicioEnEmpresa").toString();
+        String fechaInicioEnPuesto = resultSet.getDate("comienzoEnRol").toString();
         String sRol = resultSet.getString("NOMBREROL");
-        Rol rol=null;
-        switch(sRol){
-            case "Gerente" -> {
-                rol = new Gerente(fechaInicioEnPuesto);
-            }
-            case "Conductor" -> {
-                rol = new Conductor(fechaInicioEnPuesto);
-            }
-            case "Operador" -> {
-                rol = new Operador(fechaInicioEnPuesto);
-            }
-            case "Medico" -> {
-                rol = new Medico(fechaInicioEnPuesto);
-            } 
-        }
-        Empleado employe = new Empleado(nombre, apellidos, fechaNacimiento, nif, direccion, telefono, fechaInicioEnEmpresa, rol);
-        return employe;
-    }
 
+        JsonObjectBuilder rolBuilder = Json.createObjectBuilder();
+        switch (sRol) {
+            case "Gerente" -> rolBuilder.add("rol", "Gerente").add("fechaInicioEnPuesto", fechaInicioEnPuesto.toString());
+            case "Conductor" -> rolBuilder.add("rol", "Conductor").add("fechaInicioEnPuesto", fechaInicioEnPuesto.toString());
+            case "Operador" -> rolBuilder.add("rol", "Operador").add("fechaInicioEnPuesto", fechaInicioEnPuesto.toString());
+            case "Medico" -> rolBuilder.add("rol", "Medico").add("fechaInicioEnPuesto", fechaInicioEnPuesto.toString());
+            default -> rolBuilder.add("rol", "Unknown").add("fechaInicioEnPuesto", fechaInicioEnPuesto.toString());
+        }
+
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("nombre", nombre)
+                .add("apellidos", apellidos)
+                .add("nif", nif)
+                .add("fechaNacimiento", fechaNacimiento)
+                .add("direccion", direccion.toJson())
+                .add("telefono", telefono)
+                .add("fechaInicioEnEmpresa", fechaInicio)
+                .add("rol", rolBuilder);
+
+        return jsonBuilder.build();
+    }
     
     public void enregistrerEmploye(Empleado employe) throws SQLException {
         String sql = "INSERT INTO employe (nif, nombre, apellidos, fechanacimiento, telefono) VALUES (?, ?, ?, ?, ?)";
@@ -102,8 +107,8 @@ public class DAOEmpleado {
         }
     }
 
-    public static Empleado obtenerEmpleadoPorId(int id) {
-        Empleado employe = null;
+    public static JsonObject obtenerEmpleadoPorId(String id) {
+        JsonObject employe = null;
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
                         "FROM EMPLEADO " +
                         "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
@@ -114,7 +119,7 @@ public class DAOEmpleado {
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, id);
+            statement.setString(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 employe = mapperResultSetToEmpleado(resultSet);

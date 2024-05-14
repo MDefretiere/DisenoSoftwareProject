@@ -13,6 +13,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -24,35 +28,41 @@ public class DAOTurnoDeOperador {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException {
-        List<TurnoDeOperador> list = new ArrayList<TurnoDeOperador>();
-        String query = "SELECT TURNODEOPERADOR.IDTURNOOPERADOR, FECHATURNO, FECHACREACION, NOMBRETIPOTURNO, NIFCIF\n"
-                + "FROM TURNODEOPERADOR\n"
-                + "JOIN TIPODETURNODEOPERADOR ON TURNODEOPERADOR.TIPOTURNO = TIPODETURNODEOPERADOR.IDTIPOTURNO\n"
-                + "JOIN OPERADORESENTURNO ON TURNODEOPERADOR.IDTURNOOPERADOR = OPERADORESENTURNO.IDTURNOOPERADOR\n"
-                + "WHERE FECHATURNO=?";
+    public static JsonObject getTurnosPorFecha(Fecha fecha) throws SQLException {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        JsonArrayBuilder turnosArrayBuilder = Json.createArrayBuilder();
+        String query = "SELECT TURNODEOPERADOR.IDTURNOOPERADOR, FECHATURNO, FECHACREACION, NOMBRETIPOTURNO, NIFCIF, OPERADORESENTURNO.NIFCIF " +
+                       "FROM TURNODEOPERADOR " +
+                       "JOIN TIPODETURNODEOPERADOR ON TURNODEOPERADOR.TIPOTURNO = TIPODETURNODEOPERADOR.IDTIPOTURNO " +
+                       "JOIN OPERADORESENTURNO ON TURNODEOPERADOR.IDTURNOOPERADOR = OPERADORESENTURNO.IDTURNOOPERADOR " +
+                       "WHERE FECHATURNO=?";
 
-        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse); PreparedStatement statement = conn.prepareStatement(query)) {
+        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
+             PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setDate(1, Fecha.convertirLocalDateToDateSQL(fecha));
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                TurnoDeOperador turno = mapperResultSetToTurnoDeOperador(resultSet);
-                if (!list.contains(turno)) {
-                    list.add(turno);
-                } else {
-                    list.remove(turno);
-                    List<Empleado> listEnTurno = turno.getListOperador();
-                    listEnTurno.add(DAOEmpleado.obtenerEmpleadoPorId((resultSet.getInt("IDOperador"))));
-                    turno.setListEmpleado(listEnTurno);
-                    list.add(turno);
-                }
 
+            while (resultSet.next()) {
+                JsonObjectBuilder turnoBuilder = Json.createObjectBuilder();
+                turnoBuilder.add("IDTURNOOPERADOR", resultSet.getInt("IDTURNOOPERADOR"));
+                turnoBuilder.add("FECHATURNO", resultSet.getDate("FECHATURNO").toString());
+                turnoBuilder.add("FECHACREACION", resultSet.getDate("FECHACREACION").toString());
+                turnoBuilder.add("NOMBRETIPOTURNO", resultSet.getString("NOMBRETIPOTURNO"));
+                turnoBuilder.add("NIFCIF", resultSet.getString("NIFCIF"));
+
+                JsonArrayBuilder operadoresArrayBuilder = Json.createArrayBuilder();
+                String operadorId = resultSet.getString("NIFCIF");
+                JsonObject operadorJson = DAOEmpleado.obtenerEmpleadoPorId(operadorId);
+                operadoresArrayBuilder.add(operadorJson);
+
+                turnoBuilder.add("OPERADORES", operadoresArrayBuilder);
+                turnosArrayBuilder.add(turnoBuilder);
             }
         }
-        return list;
+        jsonBuilder.add("turnos", turnosArrayBuilder);
+        return jsonBuilder.build();
     }
-
-    public static TurnoDeOperador mapperResultSetToTurnoDeOperador(ResultSet resultSet) throws SQLException {
+    public static JsonObject mapperResultSetToTurnoDeOperador(ResultSet resultSet) throws SQLException {
         int idTurno = resultSet.getInt("IDTURNOOPERADOR");
         String fechaCreaciontoString = resultSet.getString("fechaCreacion");
         java.sql.Date fechaCreacionSQL = java.sql.Date.valueOf(fechaCreaciontoString);
@@ -61,22 +71,21 @@ public class DAOTurnoDeOperador {
         java.sql.Date fechaTurnoSQL = java.sql.Date.valueOf(fechaTurnotoString);
         Fecha fechaTurno = Fecha.convertirDateSQLToLocalDate(fechaTurnoSQL);
         String sTipo = resultSet.getString("NOMBRETIPOTURNO");
-        List<Empleado> listOperador = new ArrayList<>();
-        Empleado e = DAOEmpleado.obtenerEmpleadoPorId(resultSet.getInt("NIFCIF"));
-        listOperador.add(e);
-        switch (sTipo) {
-            case "DeManana7" -> {
-                return new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, TipoDeTurnoOperador.DeManana7, listOperador);
-            }
-            case "DeTarde15" -> {
-                return new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, TipoDeTurnoOperador.DeTarde15, listOperador);
-            }
-            case "DeNoche23" -> {
-                return new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, TipoDeTurnoOperador.DeNoche23, listOperador);
-            }
-            default ->
-                throw new Error("No Tipo de Operador");
-        }
+        JsonObject jsonEmpleado = DAOEmpleado.obtenerEmpleadoPorId(resultSet.getString("NIFCIF"));
+
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("idTurno", idTurno)
+                .add("fechaCreacion", fechaCreacion.toString())
+                .add("fechaTurno", fechaTurno.toString())
+                .add("tipoTurno", sTipo)
+                .add("operadores", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("id", jsonEmpleado.getString("NifCif"))
+                                .add("nombre", jsonEmpleado.getString("nombre"))
+                        )
+                );
+
+        return jsonBuilder.build();
     }
 
     public static void modificarOperadorEnTurno(TurnoDeOperador turnoAModificar, Empleado empleadoACambiar, Empleado nuevoEmpleado) throws SQLException {

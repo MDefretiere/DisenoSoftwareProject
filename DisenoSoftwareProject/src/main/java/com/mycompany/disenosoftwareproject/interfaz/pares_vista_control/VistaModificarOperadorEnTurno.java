@@ -9,9 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComboBox;
 
 /**
  *
@@ -184,6 +181,8 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
                     }
                     jButton3.setEnabled(true);
                     jComboBox1.setEnabled(true);
+                    jButton1.setEnabled(false);
+                    jComboBox2.setEnabled(false);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     System.out.println(ex.getCause());

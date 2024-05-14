@@ -18,10 +18,10 @@ CREATE TABLE ROLEMPLEADO (
 );
 
 INSERT INTO ROLEMPLEADO VALUES  
-    (1,'RolA'),
-    (2,'RolB'),
-    (3,'RolC'),
-    (4, 'RolD');
+    (1,'Gerente'),
+    (2,'Conductor'),
+    (3,'Operador'),
+    (4, 'Medico');
 
 -- Enum
 CREATE TABLE ESTADODELVINCULO (
@@ -118,28 +118,48 @@ CREATE TABLE OPERADORESENTURNO (
 
 INSERT INTO EMPLEADO (NifCif, Nombre, FechaInicioEnEmpresa, DireccionPostal, DireccionElectronica, Telefono, Password, FechaNacimiento, Apellido) VALUES 
     ('123456789','John','2023-01-01','123, Main St, WC1R, London, England','john@example.com','123456789','password123', '1983-09-12', 'Doe'),
-    ('987654321','Jane Smith','2022-12-01','456, Oak St, WC1R, London, England','jane@example.com','987654321','password456', '1989-04-02', 'Doe');
+    ('564321978','Mathew','2023-01-01','23, Obama St, WC1R, Paris, France','mathew@example.com','065439218','password932', '1993-08-12', 'Alonso'),
+    ('432156879','Dann','2023-01-01','21, York St, WC1R, Madrid, Espana','Dann@example.com','451234096','password351', '1978-06-16', 'Martin'),
+    ('987654321','Jane Smith','2022-12-01','456, Oak St, WC1R, London, England','jane@example.com','987654321','password456', '1989-04-02', 'Grand');
 
 INSERT INTO ROLESENLAEMPRESA (NifCif, Rol, ComienzoEnRol) VALUES 
     ('123456789',1,'2023-01-01'),
-    ('987654321',2,'2022-12-01');
+    ('987654321',2,'2022-12-01'),
+    ('564321978',1,'2023-02-01'),
+    ('432156879',3,'2023-02-01');
 
 INSERT INTO VINCULACIONCONLAEMPRESA (Fecha, Empleado, Estado) VALUES 
     ('2023-01-01','123456789',1),
-    ('2022-12-01','987654321',1);
+    ('2022-12-01','987654321',1),
+    ('2023-02-01','123456789',1),
+    ('2023-02-01','564321978',1),
+    ('2023-02-01','432156879',1);
 
 INSERT INTO DISPONIBILIDADEMPLEADO (Comienzo, FinalPrevisto, Empleado, Estado) VALUES 
     ('2023-01-01','2023-01-05','123456789',1),
-    ('2022-12-01','2022-12-10','987654321',1);
+    ('2022-12-01','2022-12-10','987654321',1),
+    ('2023-02-01','2023-02-10','123456789',1),
+    ('2023-02-01','2023-02-10','564321978',1),
+    ('2023-02-01','2023-02-10','432156879',1);
 
 INSERT INTO TURNODEOPERADOR (IdTurnoOperador, FechaTurno, FechaCreacion, TipoTurno) VALUES 
     (1, '2024-05-01', '2023-01-01', 1),
     (2, '2024-05-02', '2023-01-01', 2),
-    (3, '2024-05-03', '2023-01-01', 3);
+    (3, '2024-05-03', '2023-01-01', 3),
+    (4, '2024-05-04', '2023-03-01', 1),
+    (5, '2024-05-05', '2023-03-01', 2),
+    (6, '2024-05-06', '2023-03-01', 3);
 
 INSERT INTO OPERADORESENTURNO(NifCif, IdTurnoOperador) VALUES
     ('123456789', 1),
     ('123456789', 3),
     ('987654321', 2),
-    ('987654321', 3);
+    ('987654321', 3),
+    ('564321978', 5),
+    ('432156879', 6),
+    ('987654321', 4),
+    ('432156879', 3),
+    ('123456789', 4),
+    ('564321978', 1),
+    ('432156879', 2);
 

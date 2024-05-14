@@ -7,8 +7,10 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 import com.mycompany.disenosoftwareproject.persistencia.DAOTurnoDeOperador;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 /**
  *
@@ -41,10 +43,42 @@ public class TurnoDeOperador{
         return idTurno;
     }
     
-    public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException{
-        List<TurnoDeOperador> list = DAOTurnoDeOperador.getTurnosPorFecha(fecha);
-        return(list);
+    public TipoDeTurnoOperador getTipo(){
+        return tipoDeTurno;
+    } 
+    
+    public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
+        List<TurnoDeOperador> turnos = new ArrayList<>();
+        JsonObject listTurnosJson = DAOTurnoDeOperador.getTurnosPorFecha(fecha);
+        JsonArray turnosArray = listTurnosJson.getJsonArray("turnos");
+
+        for (JsonValue turnoJson : turnosArray) {
+            JsonObject turnoObj = (JsonObject) turnoJson;
+            int idTurno = turnoObj.getInt("IDTURNOOPERADOR");
+            Fecha fechaCreacion = Fecha.parseFecha(turnoObj.getString("FECHACREACION"));
+            Fecha fechaTurno = Fecha.parseFecha(turnoObj.getString("FECHATURNO"));
+            TipoDeTurnoOperador tipoDeTurno;
+            switch(turnoObj.getString("NOMBRETIPOTURNO")){
+                case "DeManana7" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                case "DeTarde15" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                case "DeNoche23" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                default -> throw new Exception("ERROR tipo de turno de Operador");
+                    
+            }
+            JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
+            List<Empleado> operadores = new ArrayList<>();
+            for (JsonValue operadorJson : operadoresArray) {
+                JsonObject operadorObj = (JsonObject) operadorJson;
+                Empleado operador = Empleado.jsonToEmpleado(operadorObj);
+                operadores.add(operador);
+            }
+
+            TurnoDeOperador turno = new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, tipoDeTurno, operadores);
+            turnos.add(turno);
+        }
+        return turnos;
     }
+
     
     
     public static void modificarOperadorEnTurno(TurnoDeOperador turnoAModificar, Empleado empleadoACambiar, Empleado nuevoEmpleado) throws SQLException {

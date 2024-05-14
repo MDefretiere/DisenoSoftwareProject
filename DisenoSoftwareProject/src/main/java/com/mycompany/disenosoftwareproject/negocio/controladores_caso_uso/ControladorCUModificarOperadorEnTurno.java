@@ -23,9 +23,11 @@ public class ControladorCUModificarOperadorEnTurno {
     private static List<Empleado> listOperadoresEnTurno = new ArrayList<>();
     private static List<Empleado> listOperadoresDispo;
     private static TurnoDeOperador turnoAModificar;
-    private static List<TurnoDeOperador> listTurnosPorFecha;
+    private static List<TurnoDeOperador> listTurnosPorFecha = new ArrayList<>();
     
     public static List<Empleado> getOperadoresEnTurnosPorFecha(Fecha fecha) throws SQLException{
+        listTurnosPorFecha.clear();
+        listOperadoresEnTurno.clear();
         listTurnosPorFecha = TurnoDeOperador.getTurnosPorFecha(fecha);
         for(TurnoDeOperador t : listTurnosPorFecha){
             for(Empleado e : t.getListOperador()){

@@ -7,6 +7,7 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Date;
 
 /**
  *
@@ -49,8 +50,25 @@ public class Fecha {
         return new Fecha(day, month, year);
     }
     
+    public static java.sql.Date convertirLocalDateToDateSQL(Fecha fecha) {
+        int year = fecha.ano;
+        int month = fecha.mes;
+        int day = fecha.dia;
+        return new java.sql.Date(year - 1900, month - 1, day);
+    }
+    
+    public static Fecha convertirLocalDateToFecha(Date date) {
+        return new Fecha(date.getDate(), date.getMonth()+1, date.getYear()+1900);
+    }
+
+    
     public long getTime() {
         LocalDateTime localDateTime = LocalDate.of(ano, mes, dia).atStartOfDay();
         return localDateTime.toEpochSecond(ZoneOffset.UTC) * 1000;
+    }
+    
+    @Override
+    public String toString(){
+        return ""+dia+"/"+mes+"/"+ano;
     }
 }

@@ -4,7 +4,9 @@
 
 package com.mycompany.disenosoftwareproject;
 
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.VistaModificarOperadorEnTurno;
 import java.sql.SQLException;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -13,7 +15,9 @@ import java.sql.SQLException;
 public class DisenoSoftwareProject {
 
     public static void main(String[] args) throws SQLException {
-        Sistema s = new Sistema();
-        s.startApp();
+        SwingUtilities.invokeLater(() -> {
+            VistaModificarOperadorEnTurno vistaModificadorEnTurno = new VistaModificarOperadorEnTurno();
+            vistaModificadorEnTurno.setVisible(true);
+        });
     }
 }

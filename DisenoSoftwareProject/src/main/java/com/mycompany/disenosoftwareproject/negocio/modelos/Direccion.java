@@ -12,12 +12,12 @@ import java.sql.SQLException;
  * @author defre
  */
 public class Direccion {
-    private int numero;
-    private String nombreVia;
-    private String otros;
-    private String codigoPostal;
-    private String localidad;
-    private String provincia;
+    private static int numero;
+    private static String nombreVia;
+    private static String otros;
+    private static String codigoPostal;
+    private static String localidad;
+    private static String provincia;
     
     public Direccion(int numero, String nombreVia, String otros, String codigoPostal, String localidad, String provincia) {
         this.numero = numero;
@@ -38,12 +38,18 @@ public class Direccion {
     }
     
     public static Direccion convertirDireccionSQL(ResultSet resultSet) throws SQLException {
-        int numero = resultSet.getInt("numero");
-        String nombreVia = resultSet.getString("nombre_via");
-        String otros = resultSet.getString("otros");
-        String codigoPostal = resultSet.getString("codigo_postal");
-        String localidad = resultSet.getString("localidad");
-        String provincia = resultSet.getString("provincia");
+        String direccionString = resultSet.getString("direccionpostal");
+        String[] parts = direccionString.split(", ");
+        
+        if (parts.length == 5) {
+            numero = Integer.parseInt(parts[0]);
+            nombreVia = parts[1];
+            codigoPostal = parts[2];
+            localidad = parts[3];
+            provincia = parts[4];
+        } else {
+            System.err.println("Format d'adresse invalide.");
+        }
         
         return new Direccion(numero, nombreVia, otros, codigoPostal, localidad, provincia);
     }

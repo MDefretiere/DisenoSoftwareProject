@@ -25,49 +25,47 @@ import java.util.List;
  * @author defre
  */
 public class DAOEmpleado {
-    private final String url = "jdbc:derby://localhost:1527/DBEmpresa";
-    private final String utilisateur = "";
-    private final String motDePasse = "";
+    private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
+    private static final String utilisateur = "root";
+    private static final String motDePasse = "0000";
 
-    public List<Empleado> obtenirTousLesEmployes() {
-        List<Empleado> listeEmployes = new ArrayList<>();
-        String query = "SELECT EMPLEADOS.NIF as NIF, EMPLEADOS.PASSWORD, EMPLEADOS.FECHAINICIOENEMPRESA, PERSONAS.NOMBRE, PERSONAS.APELLIDOS, PERSONAS.FECHADENACIMIENTO, PERSONAS.TELEFONO, TIPOSDEROL.NOMBRETIPO, DIRECCIONES.NOMBREDELAVIA, DIRECCIONES.NUMERO, DIRECCIONES.OTROS, DIRECCIONES.CODIGOPOSTAL, DIRECCIONES.LOCALIDAD, DIRECCIONES.PROVINCIA \n" +
-            "FROM PERSONAS, EMPLEADOS, TIPOSDEROL, ROLESENEMPRESA \n" +
-            "WHERE PERSONAS.NIF=EMPLEADOS.NIF, TIPOSDEROL.IDTIPO=ROLESENEMPRESA.IDTIPO, ROLESENEMPRESA.NIF=EMPLEADOS.NIF, PERSONAS.NIF=DIRECCIONES.ID;";
+    public static List<Empleado> getAllEmpleados() {
+        List<Empleado> listEmpleados = new ArrayList<>();
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+                        "FROM EMPLEADO " +
+                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL ";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
-                PreparedStatement statement = conn.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                Empleado employe = mapperResultSetToEmpleado(resultSet);
-                listeEmployes.add(employe);
+                PreparedStatement statement = conn.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                listEmpleados.add(mapperResultSetToEmpleado(resultSet));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return listeEmployes;
+        return listEmpleados;
     }
 
     // Mapping ResultSet to Empleado
-    private Empleado mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
+    private static Empleado mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
         String nombre = resultSet.getString("nombre");
-        String apellidos = resultSet.getString("apellidos");
-        String nif = resultSet.getString("NIF");
+        String apellidos = resultSet.getString("apellido");
+        String nif = resultSet.getString("NIFCIF");
         String fechaNacimientoString = resultSet.getString("fechaNacimiento");
         java.sql.Date fechaNacimientoSQL = java.sql.Date.valueOf(fechaNacimientoString);
         Fecha fechaNacimiento = Fecha.convertirDateSQLToLocalDate(fechaNacimientoSQL);
         Direccion direccion = Direccion.convertirDireccionSQL(resultSet);
         String telefono = resultSet.getString("telefono");
-        String fechaInicioEnEmpresaString = resultSet.getString("fechaNacimiento");
+        String fechaInicioEnEmpresaString = resultSet.getString("fechaINICIOENEMPRESA");
         java.sql.Date fechaInicioEnEmpresaSQL = java.sql.Date.valueOf(fechaInicioEnEmpresaString);
         Fecha fechaInicioEnEmpresa = Fecha.convertirDateSQLToLocalDate(fechaInicioEnEmpresaSQL);
-
-        String sRol = resultSet.getString("Rol");
-        String fechaInicioEnPuestoString = resultSet.getString("fechaNacimiento");
+        String fechaInicioEnPuestoString = resultSet.getString("COMIENZOENROL");
         java.sql.Date fechaInicioEnPuestoSQL = java.sql.Date.valueOf(fechaInicioEnPuestoString);
         Fecha fechaInicioEnPuesto = Fecha.convertirDateSQLToLocalDate(fechaInicioEnPuestoSQL);
+        String sRol = resultSet.getString("NOMBREROL");
         Rol rol=null;
         switch(sRol){
             case "Gerente" -> {
@@ -81,8 +79,7 @@ public class DAOEmpleado {
             }
             case "Medico" -> {
                 rol = new Medico(fechaInicioEnPuesto);
-            }
-                
+            } 
         }
         Empleado employe = new Empleado(nombre, apellidos, fechaNacimiento, nif, direccion, telefono, fechaInicioEnEmpresa, rol);
         return employe;
@@ -105,9 +102,14 @@ public class DAOEmpleado {
         }
     }
 
-    public Empleado obtenirEmployeParId(int id) {
+    public static Empleado obtenerEmpleadoPorId(int id) {
         Empleado employe = null;
-        String query = "SELECT * FROM empleados WHERE id = ?";
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+                        "FROM EMPLEADO " +
+                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                        "WHERE EMPLEADO.NifCif = ?";
+
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
                 PreparedStatement statement = conn.prepareStatement(query)) {

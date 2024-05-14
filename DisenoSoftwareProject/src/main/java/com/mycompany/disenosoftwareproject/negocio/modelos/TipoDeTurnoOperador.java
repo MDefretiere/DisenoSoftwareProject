@@ -8,7 +8,7 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
  *
  * @author defre
  */
-enum TipoDeTurnoOperador {
+public enum TipoDeTurnoOperador {
     DeManana7,
     DeTarde15,
     DeNoche23;

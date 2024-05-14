@@ -4,7 +4,9 @@
  */
 package com.mycompany.disenosoftwareproject.negocio.modelos;
 
+import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -72,5 +74,20 @@ public class Empleado extends Persona {
 
     public ArrayList<Disponibilidad> getHistoricoDeDisponiblidad() {
         return historicoDeDisponiblidad;
+    }
+    
+    public static List<Empleado> getOperadoresDisponibles(Fecha fechaTurno) {
+        List<Empleado> listDispo = new ArrayList<>();
+        List<Empleado> allEmpleados = DAOEmpleado.getAllEmpleados();
+        /*
+        for(Empleado e : allEmpleados){
+            if(e.isDisponible(fechaTurno)){
+                listDispo.add(e);
+            }
+        }
+*/
+        ////FAIRE LA LOGIQUE DES DISPONIBILITES
+        listDispo.add(allEmpleados.get(0));
+        return listDispo;    
     }
 }

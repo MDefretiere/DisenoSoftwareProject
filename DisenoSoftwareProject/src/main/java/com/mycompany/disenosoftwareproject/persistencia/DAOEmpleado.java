@@ -4,21 +4,13 @@
  */
 package com.mycompany.disenosoftwareproject.persistencia;
 
-import com.mycompany.disenosoftwareproject.negocio.modelos.Conductor;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Direccion;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
-import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
-import com.mycompany.disenosoftwareproject.negocio.modelos.Gerente;
-import com.mycompany.disenosoftwareproject.negocio.modelos.Medico;
-import com.mycompany.disenosoftwareproject.negocio.modelos.Operador;
-import com.mycompany.disenosoftwareproject.negocio.modelos.Rol;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -39,6 +31,30 @@ public class DAOEmpleado {
                        "FROM EMPLEADO " +
                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL ";
+
+        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                arrayBuilder.add(mapperResultSetToEmpleado(resultSet));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        JsonObjectBuilder resultBuilder = Json.createObjectBuilder();
+        resultBuilder.add("empleados", arrayBuilder);
+
+        return resultBuilder.build();
+    }
+    
+    public static JsonObject getAllOperadores() {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+                       "FROM EMPLEADO " +
+                       "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                       "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                       "WHERE ROLEMPLEADO.IDROL=3";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
              PreparedStatement statement = conn.prepareStatement(query)) {

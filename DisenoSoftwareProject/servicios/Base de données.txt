@@ -123,9 +123,9 @@ INSERT INTO EMPLEADO (NifCif, Nombre, FechaInicioEnEmpresa, DireccionPostal, Dir
     ('987654321','Jane Smith','2022-12-01','456, Oak St, WC1R, London, England','jane@example.com','987654321','password456', '1989-04-02', 'Grand');
 
 INSERT INTO ROLESENLAEMPRESA (NifCif, Rol, ComienzoEnRol) VALUES 
-    ('123456789',1,'2023-01-01'),
-    ('987654321',2,'2022-12-01'),
-    ('564321978',1,'2023-02-01'),
+    ('123456789',3,'2023-01-01'),
+    ('987654321',3,'2022-12-01'),
+    ('564321978',3,'2023-02-01'),
     ('432156879',3,'2023-02-01');
 
 INSERT INTO VINCULACIONCONLAEMPRESA (Fecha, Empleado, Estado) VALUES 

@@ -44,24 +44,6 @@ public class Empleado extends Persona {
         return (password.equals(l) && login.equals(p));
     }
     
-    public boolean isDisponible(Fecha fecha){
-        for(Disponibilidad d : historicoDeDisponiblidad){
-            Fecha inicio = d.getFechaInicio();
-            Fecha fin = d.getFechaFin();
-            if(fecha.compareTo(inicio) >= 0 && fin == null){
-                if(d instanceof Disponible){
-                    return true;
-                }
-            }
-            else{
-                if(fecha.entreLasDos(inicio, fin) && d instanceof Disponible){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
     public Rol getRol() {
         return rol;
     }
@@ -81,6 +63,20 @@ public class Empleado extends Persona {
     public static List<Empleado> getAllEmpleados() throws Exception {
         List<Empleado> empleados = new ArrayList<>();
         JsonObject jsonAllEmpleados = DAOEmpleado.getAllEmpleados();
+        JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
+
+        for (int i = 0; i < jsonEmpleadosArray.size(); i++) {
+            JsonObject jsonEmpleado = jsonEmpleadosArray.getJsonObject(i);
+            Empleado empleado = jsonToEmpleado(jsonEmpleado);
+            empleados.add(empleado);
+        }
+
+        return empleados;
+    }
+    
+    public static List<Empleado> getAllOperadores () throws Exception {
+        List<Empleado> empleados = new ArrayList<>();
+        JsonObject jsonAllEmpleados = DAOEmpleado.getAllOperadores();
         JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
 
         for (int i = 0; i < jsonEmpleadosArray.size(); i++) {

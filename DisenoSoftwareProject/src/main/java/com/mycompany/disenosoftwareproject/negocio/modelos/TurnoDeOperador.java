@@ -30,10 +30,6 @@ public class TurnoDeOperador{
         this.tipoDeTurno = tipoDeTurno;
         enTurno = e;
     }
-
-    public List<Empleado> getOperadores(){
-        return enTurno;
-    }
     
     public Fecha getFechaTurno(){
         return fechaTurno;
@@ -49,37 +45,46 @@ public class TurnoDeOperador{
     
     public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
         List<TurnoDeOperador> turnos = new ArrayList<>();
-        JsonObject listTurnosJson = DAOTurnoDeOperador.getTurnosPorFecha(fecha);
-        JsonArray turnosArray = listTurnosJson.getJsonArray("turnos");
+        JsonArray turnosArray = DAOTurnoDeOperador.getTurnosPorFecha(fecha).getJsonArray("turnos");
 
         for (JsonValue turnoJson : turnosArray) {
+            boolean exist = false;
             JsonObject turnoObj = (JsonObject) turnoJson;
             int idTurno = turnoObj.getInt("IDTURNOOPERADOR");
-            Fecha fechaCreacion = Fecha.parseFecha(turnoObj.getString("FECHACREACION"));
-            Fecha fechaTurno = Fecha.parseFecha(turnoObj.getString("FECHATURNO"));
-            TipoDeTurnoOperador tipoDeTurno;
-            switch(turnoObj.getString("NOMBRETIPOTURNO")){
-                case "DeManana7" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
-                case "DeTarde15" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
-                case "DeNoche23" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
-                default -> throw new Exception("ERROR tipo de turno de Operador");
-                    
+            for(TurnoDeOperador t : turnos){
+                if(t.getId()==idTurno){
+                    JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
+                    for (JsonValue operadorJson : operadoresArray) {
+                        JsonObject operadorObj = (JsonObject) operadorJson;
+                        Empleado operador = Empleado.jsonToEmpleado(operadorObj);
+                        t.getListOperador().add(operador);
+                    }
+                    exist=true;
+                }
             }
-            JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
-            List<Empleado> operadores = new ArrayList<>();
-            for (JsonValue operadorJson : operadoresArray) {
-                JsonObject operadorObj = (JsonObject) operadorJson;
-                Empleado operador = Empleado.jsonToEmpleado(operadorObj);
-                operadores.add(operador);
+            if(exist==false){
+                Fecha fechaCreacion = Fecha.parseFecha(turnoObj.getString("FECHACREACION"));
+                Fecha fechaTurno = Fecha.parseFecha(turnoObj.getString("FECHATURNO"));
+                TipoDeTurnoOperador tipoDeTurno;
+                switch(turnoObj.getString("NOMBRETIPOTURNO")){
+                    case "DeManana7" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                    case "DeTarde15" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                    case "DeNoche23" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                    default -> throw new Exception("ERROR tipo de turno de Operador");    
+                }
+                JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
+                List<Empleado> operadores = new ArrayList<>();
+                for (JsonValue operadorJson : operadoresArray) {
+                    JsonObject operadorObj = (JsonObject) operadorJson;
+                    Empleado operador = Empleado.jsonToEmpleado(operadorObj);
+                    operadores.add(operador);
+                }
+                TurnoDeOperador turno = new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, tipoDeTurno, operadores);
+                turnos.add(turno);
             }
-
-            TurnoDeOperador turno = new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, tipoDeTurno, operadores);
-            turnos.add(turno);
         }
         return turnos;
     }
-
-    
     
     public static void modificarOperadorEnTurno(TurnoDeOperador turnoAModificar, Empleado empleadoACambiar, Empleado nuevoEmpleado) throws SQLException {
         DAOTurnoDeOperador.modificarOperadorEnTurno(turnoAModificar, empleadoACambiar, nuevoEmpleado);

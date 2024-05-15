@@ -38,7 +38,7 @@ public class DAOTurnoDeOperador {
                        "WHERE FECHATURNO=?";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
-             PreparedStatement statement = conn.prepareStatement(query)) {
+            PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setDate(1, Fecha.convertirLocalDateToDateSQL(fecha));
             ResultSet resultSet = statement.executeQuery();
 

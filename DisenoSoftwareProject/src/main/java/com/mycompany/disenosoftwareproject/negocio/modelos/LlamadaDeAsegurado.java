@@ -17,4 +17,12 @@ public class LlamadaDeAsegurado extends Llamada{
         this.descripcionEmergencia = descripcionEmergencia;
         this.paciente = paciente;
     }
+    
+    public String getDescripcionEmergencia(){
+        return descripcionEmergencia;
+    }
+    
+    public Asegurado getPaciente(){
+        return paciente;
+    }
 }

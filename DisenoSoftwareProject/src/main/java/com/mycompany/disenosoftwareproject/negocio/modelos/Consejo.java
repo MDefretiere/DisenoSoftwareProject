@@ -12,12 +12,22 @@ public class Consejo {
     private String descripcion;
     private String resultado;
     private boolean soluciona;
-    private LlamadaNoCritica llamada;
     
-    public Consejo(String descripcion, String resultado, boolean soluciona, LlamadaNoCritica llamada) {
+    public Consejo(String descripcion, String resultado, boolean soluciona) {
         this.descripcion = descripcion;
         this.resultado = resultado;
         this.soluciona = soluciona;
-        this.llamada = llamada;
+    }
+    
+    public String getDescripcion(){
+        return descripcion;
+    }
+    
+    public String getResultado(){
+        return descripcion;
+    }
+    
+    public boolean isSoluciona(){
+        return soluciona;
     }
 }

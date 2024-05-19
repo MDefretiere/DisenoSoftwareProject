@@ -7,8 +7,10 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -86,6 +88,14 @@ public class Empleado extends Persona {
         }
 
         return empleados;
+    }
+    
+    public static Empleado getEmpleadoPorId(String nifcif) throws Exception {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        jsonBuilder.add("nif", nifcif);
+        JsonObject jsonParam = jsonBuilder.build();
+        JsonObject jsonEmpleado = DAOEmpleado.obtenerEmpleadoPorId(jsonParam);
+        return jsonToEmpleado(jsonEmpleado);
     }
 
     public static Empleado jsonToEmpleado(JsonObject jsonEmpleado) throws Exception {

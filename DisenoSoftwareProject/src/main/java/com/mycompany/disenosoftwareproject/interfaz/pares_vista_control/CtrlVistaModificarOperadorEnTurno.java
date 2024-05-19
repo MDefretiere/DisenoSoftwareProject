@@ -19,15 +19,25 @@ import javax.swing.SwingUtilities;
  * @author defre
  */
 public class CtrlVistaModificarOperadorEnTurno {
-    public static List<Empleado> getTurnosPorFecha(Date date) throws Exception{
-        if(date==null){
-            throw new Exception("Fecha no valida");
+
+    public static List<Empleado> getTurnosPorFecha(Date date) throws Exception {
+        List<Empleado> list=null;
+        try {
+            if (date == null) {
+                throw new Exception("Fecha no valida");
+            } else {
+                Fecha fecha = Fecha.convertirLocalDateToFecha(date);
+                list = ControladorCUModificarOperadorEnTurno.getOperadoresEnTurnosPorFecha(fecha);
+                return list;
+            }
+        } catch (Exception e) {
+            SwingUtilities.invokeLater(() -> {
+                VistaInformacion vistaError = new VistaInformacion();
+                vistaError.setErrorMessage(e.getMessage());
+                vistaError.setVisible(true);
+            });
         }
-        else{
-            Fecha fecha = Fecha.convertirLocalDateToFecha(date);
-            List<Empleado> list = ControladorCUModificarOperadorEnTurno.getOperadoresEnTurnosPorFecha(fecha);
-            return list;
-        }
+        return list;
     }
 
     public List<Empleado> getOperadoresDispo(Object selectedItem) throws Exception {
@@ -41,8 +51,8 @@ public class CtrlVistaModificarOperadorEnTurno {
             throw new Exception("No empleado seleccionado");
         }
     }
-    
-    public void modificarOperadorEnTurno(Object selectedItem)throws Exception {
+
+    public void modificarOperadorEnTurno(Object selectedItem) throws Exception {
         if (selectedItem != null) {
             String selectedString = selectedItem.toString();
             String[] parts = selectedString.split(":");
@@ -51,7 +61,7 @@ public class CtrlVistaModificarOperadorEnTurno {
             throw new Exception("No empleado seleccionado");
         }
     }
-    
+
     public static void preguntarConfirmacion(TurnoDeOperador turnoAModificar, Empleado empleadoACambiar, Empleado nuevoEmpleado) {
         SwingUtilities.invokeLater(() -> {
             VistaConfirmacionModificarOperadorEnTurno vistaConfirmacionModificarOperadorEnTurno = new VistaConfirmacionModificarOperadorEnTurno();
@@ -64,8 +74,8 @@ public class CtrlVistaModificarOperadorEnTurno {
             }
         }
     }
-    
-    public static void confirmacion(boolean confirmacion) throws SQLException{
+
+    public static void confirmacion(boolean confirmacion) throws SQLException {
         ControladorCUModificarOperadorEnTurno.confirmacion(confirmacion);
         SwingUtilities.invokeLater(() -> {
             VistaInformacionConfirmacion vistaInformacion = new VistaInformacionConfirmacion();

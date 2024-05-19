@@ -10,6 +10,9 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -67,7 +70,9 @@ public class Fecha {
     
     @Override
     public String toString(){
-        return ""+dia+"/"+mes+"/"+ano;
+        String moisFormat = String.format("%02d", mes); // Formater le mois avec deux chiffres
+        String jourFormat = String.format("%02d", dia); // Formater le jour avec deux chiffres
+        return "" + ano + "-" + moisFormat + "-" + jourFormat;
     }
     
     public Fecha diaAnterior(){
@@ -90,5 +95,18 @@ public class Fecha {
         } catch (DateTimeParseException e) {
             return null;
         }
+    }
+    
+    public static Fecha getFechaActual() {
+        LocalDate currentDate = LocalDate.now();
+        return new Fecha(currentDate.getDayOfMonth(), currentDate.getMonthValue(), currentDate.getYear());
+    }
+    
+    public JsonObject toJson() {
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        jsonBuilder.add("dia", this.dia);
+        jsonBuilder.add("mes", this.mes);
+        jsonBuilder.add("ano", this.ano);
+        return jsonBuilder.build();
     }
 }

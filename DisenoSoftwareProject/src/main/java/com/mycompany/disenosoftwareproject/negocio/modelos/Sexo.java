@@ -8,7 +8,7 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
  *
  * @author defre
  */
-enum Sexo {
+public enum Sexo {
     hombre,
     mujer
 }

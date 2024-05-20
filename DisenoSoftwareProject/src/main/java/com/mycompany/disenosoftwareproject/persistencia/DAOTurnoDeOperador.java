@@ -48,7 +48,7 @@ public class DAOTurnoDeOperador {
 
                 JsonArrayBuilder operadoresArrayBuilder = Json.createArrayBuilder();
                 String operadorId = resultSet.getString("NIFCIF");
-                JsonObject operadorJson = DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("id", operadorId).build());
+                JsonObject operadorJson = DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("nif", operadorId).build());
                 operadoresArrayBuilder.add(operadorJson);
 
                 turnoBuilder.add("OPERADORES", operadoresArrayBuilder);
@@ -88,9 +88,9 @@ public class DAOTurnoDeOperador {
     public static void modificarOperadorEnTurno(JsonObject jsonInput) throws SQLException {
         String query = "UPDATE OPERADORESENTURNO SET NifCif = ? WHERE IdTurnoOperador = ? AND NifCif = ?";
 
-        String nuevoNif = jsonInput.getString("nuevoNif");
-        int idTurnoOperador = jsonInput.getInt("idTurnoOperador");
-        String antiguoNif = jsonInput.getString("antiguoNif");
+        String nuevoNif = jsonInput.getString("nifNuevoEmpleado");
+        int idTurnoOperador = jsonInput.getInt("idTurno");
+        String antiguoNif = jsonInput.getString("nifEmpleadoACambiar");
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse); 
              PreparedStatement statement = conn.prepareStatement(query)) {

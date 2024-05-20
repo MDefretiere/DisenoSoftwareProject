@@ -12,6 +12,8 @@ import java.awt.Window;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.SwingUtilities;
 
 /**
@@ -43,9 +45,14 @@ public class CtrlVistaModificarOperadorEnTurno {
     public List<Empleado> getOperadoresDispo(Object selectedItem) throws Exception {
         List<Empleado> dispos;
         if (selectedItem != null) {
-            String selectedString = selectedItem.toString();
-            String[] parts = selectedString.split(":");
-            dispos = ControladorCUModificarOperadorEnTurno.getOperadoresDisponibles(parts[1]);
+            Pattern pattern = Pattern.compile("NIF:(\\w+)");
+            Matcher matcher = pattern.matcher(selectedItem.toString());
+            String nif=null;
+            if (matcher.find()) {
+                nif = matcher.group(1);
+            } else {
+            }
+            dispos = ControladorCUModificarOperadorEnTurno.getOperadoresDisponibles(nif);
             return dispos;
         } else {
             throw new Exception("No empleado seleccionado");
@@ -54,9 +61,14 @@ public class CtrlVistaModificarOperadorEnTurno {
 
     public void modificarOperadorEnTurno(Object selectedItem) throws Exception {
         if (selectedItem != null) {
-            String selectedString = selectedItem.toString();
-            String[] parts = selectedString.split(":");
-            ControladorCUModificarOperadorEnTurno.modificarOperadorEnTurno(parts[1]);
+            Pattern pattern = Pattern.compile("NIF:(\\w+)");
+            Matcher matcher = pattern.matcher(selectedItem.toString());
+            String nif=null;
+            if (matcher.find()) {
+                nif = matcher.group(1);
+            } else {
+            }
+            ControladorCUModificarOperadorEnTurno.modificarOperadorEnTurno(nif);
         } else {
             throw new Exception("No empleado seleccionado");
         }

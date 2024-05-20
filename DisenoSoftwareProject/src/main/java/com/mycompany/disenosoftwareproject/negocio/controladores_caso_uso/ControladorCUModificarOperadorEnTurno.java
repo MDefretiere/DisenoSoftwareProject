@@ -32,6 +32,9 @@ public class ControladorCUModificarOperadorEnTurno {
         listTurnosPorFecha.clear();
         listOperadoresEnTurno.clear();
         listTurnosPorFecha = TurnoDeOperador.getTurnosPorFecha(fecha);
+        if(listTurnosPorFecha.isEmpty()){
+            throw new Exception("No hay turno en ese dia.");
+        }
         for (TurnoDeOperador t : listTurnosPorFecha) {
             for (Empleado e : t.getListOperador()) {
                 listOperadoresEnTurno.add(e);

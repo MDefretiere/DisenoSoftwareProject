@@ -16,7 +16,8 @@ import javax.json.JsonObjectBuilder;
  * Auteur: defre
  */
 public class DAOEmpleado {
-    private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
+    //private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
+    private static final String url = "jdbc:postgresql://4.tcp.eu.ngrok.io:13455/DBEmpresa";
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 

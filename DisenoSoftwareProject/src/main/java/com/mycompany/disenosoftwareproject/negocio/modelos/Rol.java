@@ -14,4 +14,13 @@ public class Rol {
     public Rol(Fecha fechaInicioEnPuesto){
         this.fechaInicioEnPuesto = fechaInicioEnPuesto;
     }
+    
+    public Fecha getFechaInicioEnPuesto() {
+        return fechaInicioEnPuesto;
+    }
+    
+    public static Rol valueOf(String str) {
+        Fecha fecha = Fecha.parseFecha(str);
+        return new Rol(fecha);
+    }
 }

@@ -24,38 +24,42 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="81" max="32767" attributes="0"/>
+              <EmptySpace pref="40" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="jTextField2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="178" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jTextField3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="jTextField4" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jTextField3" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jDateChooser1" min="-2" pref="161" max="-2" attributes="0"/>
-                          <Component id="jComboBox1" min="-2" pref="162" max="-2" attributes="0"/>
-                          <Component id="jComboBox2" alignment="1" min="-2" pref="161" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
+                              <Component id="jDateChooser1" min="-2" pref="161" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jComboBox2" alignment="1" min="-2" pref="268" max="-2" attributes="0"/>
+                                  <Component id="jComboBox1" alignment="1" min="-2" pref="270" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
-                      <Component id="jTextField4" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
+              <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
+              <Component id="jButton3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
@@ -152,7 +156,7 @@
         <Property name="text" type="java.lang.String" value="Buscar turnos"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton2.addActionListener(new ActionListener() {&#xa;&#xa;    @Override&#xa;public void actionPerformed(ActionEvent e){&#xa;&#xa;        try {&#xa;            Date fecha = jDateChooser1.getDate();&#xa;            List&lt;Empleado&gt; list = ctrlVista.getTurnosPorFecha(fecha);&#xa;            jComboBox1.removeAllItems();&#xa;            if (!list.isEmpty()) {&#xa;                for (Empleado emp : list) {&#xa;                    jComboBox1.addItem(emp.getNombre() + &quot; &quot; + emp.getApellidos()+&quot;:&quot;+emp.getNif());&#xa;                }&#xa;            }&#xa;            else{&#xa;                jComboBox1.addItem(&quot;No operadores en turno&quot;);&#xa;            }&#xa;            jButton3.setEnabled(true);&#xa;            jComboBox1.setEnabled(true);&#xa;            jButton1.setEnabled(false);&#xa;            jComboBox2.setEnabled(false);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton2.addActionListener(new ActionListener() {&#xa;&#xa;    @Override&#xa;public void actionPerformed(ActionEvent e){&#xa;&#xa;        try {&#xa;            Date fecha = jDateChooser1.getDate();&#xa;            List&lt;Empleado&gt; list = ctrlVista.getTurnosPorFecha(fecha);&#xa;            jComboBox1.removeAllItems();&#xa;            if (!list.isEmpty()) {&#xa;                for (Empleado emp : list) {&#xa;                    jComboBox1.addItem(emp.getNombre() + &quot; &quot; + emp.getApellidos()+&quot;, NIF:&quot;+emp.getNif()+&quot;, Telefono:&quot;+emp.getTelefono());&#xa;                }&#xa;                jButton3.setEnabled(true);&#xa;            }&#xa;            else{&#xa;                jComboBox1.addItem(&quot;No operadores en turno&quot;);&#xa;                jButton3.setEnabled(false);&#xa;            }&#xa;            jComboBox1.setEnabled(true);&#xa;            jButton1.setEnabled(false);&#xa;            jComboBox2.setEnabled(false);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="jButton3">
@@ -160,7 +164,7 @@
         <Property name="text" type="java.lang.String" value="Buscar operadores disponibles"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton3.addActionListener(new ActionListener() {&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            List&lt;Empleado&gt; operadoresDispo = ctrlVista.getOperadoresDispo(jComboBox1.getSelectedItem());&#xa;            jComboBox2.removeAllItems();&#xa;            if (!operadoresDispo.isEmpty()) {&#xa;                for (Empleado emp : operadoresDispo) {&#xa;                    jComboBox2.addItem(emp.getNombre() + &quot; &quot; + emp.getApellidos()+&quot;:&quot;+emp.getNif());&#xa;                }&#xa;            }&#xa;            else{&#xa;                jComboBox2.addItem(&quot;No operadores disponibles&quot;);&#xa;            }&#xa;            jButton1.setEnabled(true);&#xa;            jComboBox2.setEnabled(true);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});&#xa;&#xa;jButton3.setEnabled(false);"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton3.addActionListener(new ActionListener() {&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            List&lt;Empleado&gt; operadoresDispo = ctrlVista.getOperadoresDispo(jComboBox1.getSelectedItem());&#xa;            jComboBox2.removeAllItems();&#xa;            if (!operadoresDispo.isEmpty()) {&#xa;                for (Empleado emp : operadoresDispo) {&#xa;                    jComboBox2.addItem(emp.getNombre() + &quot; &quot; + emp.getApellidos()+&quot;, NIF:&quot;+emp.getNif()+&quot;, Telefono:&quot;+emp.getTelefono());&#xa;                }&#xa;                jButton1.setEnabled(true);&#xa;            }&#xa;            else{&#xa;                jComboBox2.addItem(&quot;No operadores disponibles&quot;);&#xa;                jButton1.setEnabled(false);&#xa;            }&#xa;            jComboBox2.setEnabled(true);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});&#xa;&#xa;jButton3.setEnabled(false);"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBox1">

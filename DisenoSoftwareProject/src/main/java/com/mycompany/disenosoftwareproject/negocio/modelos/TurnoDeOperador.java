@@ -43,8 +43,9 @@ public class TurnoDeOperador {
 
     public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
         List<TurnoDeOperador> turnos = new ArrayList<>();
-        JsonObject jsonFecha = fecha.toJson();
-        JsonArray turnosArray = DAOTurnoDeOperador.getTurnosPorFecha(jsonFecha).getJsonArray("turnos");
+        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+        jsonBuilder.add("fecha", fecha.toString());
+        JsonArray turnosArray = DAOTurnoDeOperador.getTurnosPorFecha(jsonBuilder.build()).getJsonArray("turnos");
 
         for (JsonValue turnoJson : turnosArray) {
             boolean exist = false;

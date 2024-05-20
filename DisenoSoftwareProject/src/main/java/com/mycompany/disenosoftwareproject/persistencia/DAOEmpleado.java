@@ -49,7 +49,7 @@ public class DAOEmpleado {
                        "FROM EMPLEADO " +
                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
-                       "WHERE ROLEMPLEADO.IDROL=3";
+                       "WHERE ROLEMPLEADO.IDROL=2";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
              PreparedStatement statement = conn.prepareStatement(query)) {

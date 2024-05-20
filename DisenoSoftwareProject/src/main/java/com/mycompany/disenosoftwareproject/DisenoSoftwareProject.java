@@ -16,10 +16,10 @@ import javax.swing.SwingUtilities;
 public class DisenoSoftwareProject {
     static ControladorCUAtenderLlamada controlador = new ControladorCUAtenderLlamada();
     public static void main(String[] args) throws SQLException, Exception {
-        /*SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             VistaModificarOperadorEnTurno vistaModificadorEnTurno = new VistaModificarOperadorEnTurno();
             vistaModificadorEnTurno.setVisible(true);
-        });*/
-        controlador.start();
+        });
+        //controlador.start();
     }
 }

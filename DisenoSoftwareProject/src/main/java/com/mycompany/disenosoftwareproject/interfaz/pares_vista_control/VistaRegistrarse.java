@@ -3,17 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
+import com.mycompany.disenosoftwareproject.negocio.modelos;
+import javax.swing.JOptionPane;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
 
-/**
- *
- * @author defre
- */
-public class RegistrarseView extends javax.swing.JPanel {
+public class VistaRegistrarse extends javax.swing.JPanel {
 
-    /**
-     * Creates new form RegistrarseView
-     */
-    public RegistrarseView() {
+    public VistaRegistrarse() {
         initComponents();
     }
 
@@ -29,7 +30,7 @@ public class RegistrarseView extends javax.swing.JPanel {
         jTextField2 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        iniciarSesion = new javax.swing.JButton();
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -41,7 +42,7 @@ public class RegistrarseView extends javax.swing.JPanel {
 
         jLabel2.setText("Contraseña");
 
-        jButton1.setText("Iniciar sesión");
+        iniciarSesion.setText("Iniciar sesión");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -64,7 +65,7 @@ public class RegistrarseView extends javax.swing.JPanel {
                 .addContainerGap(148, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(146, 146, 146)
-                .addComponent(jButton1)
+                .addComponent(iniciarSesion)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -79,7 +80,7 @@ public class RegistrarseView extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(iniciarSesion)
                 .addContainerGap(96, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -87,10 +88,65 @@ public class RegistrarseView extends javax.swing.JPanel {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         
     }//GEN-LAST:event_jTextField1ActionPerformed
+    
+    private void iniciarSesionActionPerformed(java.awt.event.ActionEvent evt) throws JSONException, IOException {
+        String identificador = jTextField1.getText();
+        String contrasena = jTextField2.getText();
 
+        if (identificador.isEmpty() || contrasena.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            boolean isAuthenticated = false;
+            String rol = "";
+
+            // Lire le fichier JSON
+            String content = new String(Files.readAllBytes(Paths.get("AChanger.json")));
+            JSONArray empleados = new JSONArray(content);
+
+            for (int i = 0; i < empleados.length(); i++) {
+                JSONObject empleado = empleados.getJSONObject(i);
+                if (empleado.getString("identificador").equals(identificador) &&
+                    empleado.getString("contrasena").equals(contrasena)) {
+                    isAuthenticated = true;
+                    rol = empleado.getString("rol");
+                    break;
+                }
+            }
+
+            if (isAuthenticated) {
+                switch (rol) {
+                    case "gerente":
+                        JOptionPane.showMessageDialog(this, "Acceso concedido. Rol: Gerente", "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+                        // Ouvrir la vue GerenteView
+                        VistaGerente gerenteView = new Gerente();
+                        // Code pour afficher la vue GerenteView
+                        break;
+                    case "operador":
+                        JOptionPane.showMessageDialog(this, "Acceso concedido. Rol: Operador", "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+                        // Ouvrir la vue OperadorView
+                        ViewOperador operadorView = new Operador();
+                        // Code pour afficher la vue OperadorView
+                        break;
+                    case "medico":
+                    case "conductor":
+                        JOptionPane.showMessageDialog(this, "Acceso concedido. Rol: Personal de Operativo", "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+                        // Ouvrir la vue PersonalDeOperativoView
+                        ViewPersonalDeOperativo personalDeOperativoView = new PersonalDeOperativo();
+                        // Code pour afficher la vue PersonalDeOperativoView
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(this, "Rol desconocido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Identificador o contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton iniciarSesion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField jTextField1;

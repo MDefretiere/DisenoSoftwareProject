@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.JsonObject;
 
 /**
  *
@@ -102,22 +103,50 @@ public class DAOEmpleado {
         }
     }
 
-    public static Empleado obtenerEmpleadoPorId(int id) {
-        Empleado employe = null;
+    public static JsonObject obtenerEmpleadoPorId(JsonObject jsonInput) {
+        JsonObject employe = null;
+        String id = jsonInput.getString("nif");
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
-                        "FROM EMPLEADO " +
-                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
-                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
-                        "WHERE EMPLEADO.NifCif = ?";
-
+                       "FROM EMPLEADO " +
+                       "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                       "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                       "WHERE EMPLEADO.NifCif = ?";
+                 
+                       
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
-                PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setInt(1, id);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                employe = mapperResultSetToEmpleado(resultSet);
+                employe = (JsonObject) mapperResultSetToEmpleado(resultSet);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return employe;
+    }
+    
+    public static JsonObject obtenerEmpleadoPorIdYContrasena(JsonObject jsonInput) {
+        JsonObject employe = null;
+        String id = jsonInput.getString("nif");
+        String psw = jsonInput.getString("contrasena");
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+                       "FROM EMPLEADO " +
+                       "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                       "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                       "WHERE EMPLEADO.NifCif = ? AND EMPLEADO.PASSWORD = ?";
+                 
+                       
+
+        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, id);
+            statement.setString(2, psw);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                employe = (JsonObject) mapperResultSetToEmpleado(resultSet);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

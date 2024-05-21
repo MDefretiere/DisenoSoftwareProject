@@ -106,7 +106,7 @@
         <Property name="text" type="java.lang.String" value="Confirmar cambio"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton1.addActionListener(new ActionListener() {&#xa;&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            CtrlVistaModificarOperadorEnTurno.confirmacion(true);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton1.addActionListener(new ActionListener() {&#xa;&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            controladorVista.confirmacion(true);&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField4">

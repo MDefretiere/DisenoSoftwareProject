@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
  * @author defre
  */
 public class VistaConfirmacionModificarOperadorEnTurno extends javax.swing.JFrame {
-
+    private CtrlVistaModificarOperadorEnTurno controladorVista = CtrlVistaModificarOperadorEnTurno.getInstance();
     /**
      * Creates new form VistaConfirmacionModificarOperadorEnTurno
      */
@@ -114,7 +114,7 @@ public class VistaConfirmacionModificarOperadorEnTurno extends javax.swing.JFram
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    CtrlVistaModificarOperadorEnTurno.confirmacion(true);
+                    controladorVista.confirmacion(true);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     System.out.println(ex.getCause());

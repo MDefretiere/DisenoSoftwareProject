@@ -5,6 +5,7 @@
 package com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso;
 
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaModificarOperadorEnTurno;
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaRegistrarLlamadaEntrante;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
 import com.mycompany.disenosoftwareproject.negocio.modelos.TipoDeTurnoOperador;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author defre
  */
 public class ControladorCUModificarOperadorEnTurno {
-
+    private static ControladorCUModificarOperadorEnTurno controlador = new ControladorCUModificarOperadorEnTurno();
     private static Fecha fechaTurno;
     private static Empleado empleadoACambiar;
     private static Empleado nuevoEmpleado;
@@ -27,8 +28,16 @@ public class ControladorCUModificarOperadorEnTurno {
     private static TurnoDeOperador turnoAModificar;
     private static List<TurnoDeOperador> listTurnosPorFecha = new ArrayList<>();
     private static List<Empleado> allOperadores;
+    
+    public static ControladorCUModificarOperadorEnTurno getInstance(){
+        return controlador;
+    }
+    
+    public void start() throws Exception{
+        CtrlVistaModificarOperadorEnTurno.open();
+    }
 
-    public static List<Empleado> getOperadoresEnTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
+    public List<Empleado> getOperadoresEnTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
         listTurnosPorFecha.clear();
         listOperadoresEnTurno.clear();
         listTurnosPorFecha = TurnoDeOperador.getTurnosPorFecha(fecha);
@@ -44,7 +53,7 @@ public class ControladorCUModificarOperadorEnTurno {
         return (listOperadoresEnTurno);
     }
 
-    public static List<Empleado> getOperadoresDisponibles(String idOperador) throws SQLException, Exception {
+    public List<Empleado> getOperadoresDisponibles(String idOperador) throws SQLException, Exception {
         allOperadores = Empleado.getAllOperadores();
         for (Empleado e : listOperadoresEnTurno) {
             if (e.getNif().equals(idOperador)) {
@@ -84,7 +93,7 @@ public class ControladorCUModificarOperadorEnTurno {
         return listOperadoresDispo;
     }
 
-    public static boolean isEmpleadoDispo(Empleado e, List<TurnoDeOperador> turnoAComprobar) {
+    public boolean isEmpleadoDispo(Empleado e, List<TurnoDeOperador> turnoAComprobar) {
         boolean dispo=true;
         for (TurnoDeOperador t : turnoAComprobar) {
             for (Empleado test : t.getListOperador()) {
@@ -96,7 +105,7 @@ public class ControladorCUModificarOperadorEnTurno {
         return dispo;
     }
 
-    public static void modificarOperadorEnTurno(String idOperador) {
+    public void modificarOperadorEnTurno(String idOperador) {
         for (Empleado e : listOperadoresDispo) {
             if (e.getNif().equals(idOperador)) {
                 nuevoEmpleado = e;
@@ -105,7 +114,7 @@ public class ControladorCUModificarOperadorEnTurno {
         CtrlVistaModificarOperadorEnTurno.preguntarConfirmacion(turnoAModificar, empleadoACambiar, nuevoEmpleado);
     }
 
-    public static void confirmacion(boolean confirmacion) throws SQLException {
+    public void confirmacion(boolean confirmacion) throws SQLException {
         if (confirmacion) {
             TurnoDeOperador.modificarOperadorEnTurno(turnoAModificar, empleadoACambiar, nuevoEmpleado);
         }

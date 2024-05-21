@@ -6,6 +6,7 @@ package com.mycompany.disenosoftwareproject;
 
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.VistaModificarOperadorEnTurno;
 import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUAtenderLlamada;
+import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUModificarOperadorEnTurno;
 import java.sql.SQLException;
 import javax.swing.SwingUtilities;
 
@@ -14,12 +15,10 @@ import javax.swing.SwingUtilities;
  * @author defre
  */
 public class DisenoSoftwareProject {
-    static ControladorCUAtenderLlamada controlador = new ControladorCUAtenderLlamada();
+    private static ControladorCUAtenderLlamada controladorCULlamada = ControladorCUAtenderLlamada.getInstance();
+    private static ControladorCUModificarOperadorEnTurno controladorModificarOperadorEnTurno = ControladorCUModificarOperadorEnTurno.getInstance();
     public static void main(String[] args) throws SQLException, Exception {
-        SwingUtilities.invokeLater(() -> {
-            VistaModificarOperadorEnTurno vistaModificadorEnTurno = new VistaModificarOperadorEnTurno();
-            vistaModificadorEnTurno.setVisible(true);
-        });
-        //controlador.start();
+        controladorModificarOperadorEnTurno.start();
+        //controladorCULlamada.start();
     }
 }

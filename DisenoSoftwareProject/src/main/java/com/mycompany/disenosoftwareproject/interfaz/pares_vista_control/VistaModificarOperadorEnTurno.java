@@ -15,8 +15,7 @@ import java.util.List;
  * @author defre
  */
 public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
-
-    CtrlVistaModificarOperadorEnTurno ctrlVista = new CtrlVistaModificarOperadorEnTurno();
+    private CtrlVistaModificarOperadorEnTurno controladorVista = CtrlVistaModificarOperadorEnTurno.getInstance();
     /**
      * Creates new form VistaModificarOperadorEnTurno
      */
@@ -156,7 +155,7 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    ctrlVista.modificarOperadorEnTurno(jComboBox2.getSelectedItem());
+                    controladorVista.modificarOperadorEnTurno(jComboBox2.getSelectedItem());
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     System.out.println(ex.getCause());
@@ -172,7 +171,7 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
 
                 try {
                     Date fecha = jDateChooser1.getDate();
-                    List<Empleado> list = ctrlVista.getTurnosPorFecha(fecha);
+                    List<Empleado> list = controladorVista.getTurnosPorFecha(fecha);
                     jComboBox1.removeAllItems();
                     if (!list.isEmpty()) {
                         for (Empleado emp : list) {
@@ -197,7 +196,7 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    List<Empleado> operadoresDispo = ctrlVista.getOperadoresDispo(jComboBox1.getSelectedItem());
+                    List<Empleado> operadoresDispo = controladorVista.getOperadoresDispo(jComboBox1.getSelectedItem());
                     jComboBox2.removeAllItems();
                     if (!operadoresDispo.isEmpty()) {
                         for (Empleado emp : operadoresDispo) {

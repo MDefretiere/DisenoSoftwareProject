@@ -21,15 +21,28 @@ import javax.swing.SwingUtilities;
  * @author defre
  */
 public class CtrlVistaModificarOperadorEnTurno {
+    private ControladorCUModificarOperadorEnTurno controladorCU = ControladorCUModificarOperadorEnTurno.getInstance();
+    private static CtrlVistaModificarOperadorEnTurno controladorVista = new CtrlVistaModificarOperadorEnTurno();
+    
+    public static CtrlVistaModificarOperadorEnTurno getInstance(){
+        return controladorVista;
+    }
 
-    public static List<Empleado> getTurnosPorFecha(Date date) throws Exception {
+    public static void open(){
+        SwingUtilities.invokeLater(() -> {
+            VistaModificarOperadorEnTurno vistaModificarOperadorEnTurno = new VistaModificarOperadorEnTurno();
+            vistaModificarOperadorEnTurno.setVisible(true);
+        });
+    }
+
+    public List<Empleado> getTurnosPorFecha(Date date) throws Exception {
         List<Empleado> list=null;
         try {
             if (date == null) {
                 throw new Exception("Fecha no valida");
             } else {
                 Fecha fecha = Fecha.convertirLocalDateToFecha(date);
-                list = ControladorCUModificarOperadorEnTurno.getOperadoresEnTurnosPorFecha(fecha);
+                list = controladorCU.getOperadoresEnTurnosPorFecha(fecha);
                 return list;
             }
         } catch (Exception e) {
@@ -52,7 +65,7 @@ public class CtrlVistaModificarOperadorEnTurno {
                 nif = matcher.group(1);
             } else {
             }
-            dispos = ControladorCUModificarOperadorEnTurno.getOperadoresDisponibles(nif);
+            dispos = controladorCU.getOperadoresDisponibles(nif);
             return dispos;
         } else {
             throw new Exception("No empleado seleccionado");
@@ -68,7 +81,7 @@ public class CtrlVistaModificarOperadorEnTurno {
                 nif = matcher.group(1);
             } else {
             }
-            ControladorCUModificarOperadorEnTurno.modificarOperadorEnTurno(nif);
+            controladorCU.modificarOperadorEnTurno(nif);
         } else {
             throw new Exception("No empleado seleccionado");
         }
@@ -87,8 +100,8 @@ public class CtrlVistaModificarOperadorEnTurno {
         }
     }
 
-    public static void confirmacion(boolean confirmacion) throws SQLException {
-        ControladorCUModificarOperadorEnTurno.confirmacion(confirmacion);
+    public void confirmacion(boolean confirmacion) throws SQLException {
+        controladorCU.confirmacion(confirmacion);
         SwingUtilities.invokeLater(() -> {
             VistaInformacionConfirmacion vistaInformacion = new VistaInformacionConfirmacion();
             vistaInformacion.setVisible(true);

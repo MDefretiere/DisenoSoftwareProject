@@ -16,7 +16,6 @@ import javax.json.JsonObjectBuilder;
  * Auteur: defre
  */
 public class DAOTurnoDeOperador {
-
     private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";

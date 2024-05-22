@@ -33,21 +33,4 @@ public class Poliza {
     public String getNumero(){
         return numeroPoliza;
     }
-    
-    public static List<Poliza> getAllPolizas(){
-        JsonObject json = DAOPoliza.getAllPoliza();
-        JsonArray jsonArray = json.getJsonArray("polizas"); // Utilise la clé correcte
-        
-        List<Poliza> polizas = new ArrayList<>();
-        for (JsonObject polizaJson : jsonArray.getValuesAs(JsonObject.class)) {
-            String numeroPoliza = polizaJson.getString("numeroPoliza");
-            Fecha fechaInicio = Fecha.parseFecha(polizaJson.getString("fechaInicio"));
-            Fecha fechaVencimiento = Fecha.parseFecha(polizaJson.getString("fechaVencimiento"));
-
-            Poliza poliza = new Poliza(numeroPoliza, fechaInicio, fechaVencimiento);
-            polizas.add(poliza);
-        }
-
-        return polizas;
-    }
 }

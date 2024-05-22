@@ -62,41 +62,9 @@ public class Empleado extends Persona {
         return historicoDeDisponiblidad;
     }
     
-    public static List<Empleado> getAllEmpleados() throws Exception {
-        List<Empleado> empleados = new ArrayList<>();
-        JsonObject jsonAllEmpleados = DAOEmpleado.getAllEmpleados();
-        JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
-
-        for (int i = 0; i < jsonEmpleadosArray.size(); i++) {
-            JsonObject jsonEmpleado = jsonEmpleadosArray.getJsonObject(i);
-            Empleado empleado = jsonToEmpleado(jsonEmpleado);
-            empleados.add(empleado);
-        }
-
-        return empleados;
-    }
     
-    public static List<Empleado> getAllOperadores () throws Exception {
-        List<Empleado> empleados = new ArrayList<>();
-        JsonObject jsonAllEmpleados = DAOEmpleado.getAllOperadores();
-        JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
-
-        for (int i = 0; i < jsonEmpleadosArray.size(); i++) {
-            JsonObject jsonEmpleado = jsonEmpleadosArray.getJsonObject(i);
-            Empleado empleado = jsonToEmpleado(jsonEmpleado);
-            empleados.add(empleado);
-        }
-
-        return empleados;
-    }
     
-    public static Empleado getEmpleadoPorId(String nifcif) throws Exception {
-        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
-        jsonBuilder.add("nif", nifcif);
-        JsonObject jsonParam = jsonBuilder.build();
-        JsonObject jsonEmpleado = DAOEmpleado.obtenerEmpleadoPorId(jsonParam);
-        return jsonToEmpleado(jsonEmpleado);
-    }
+    
 
     public static Empleado jsonToEmpleado(JsonObject jsonEmpleado) throws Exception {
         String nif = jsonEmpleado.getString("nif");

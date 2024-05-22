@@ -20,8 +20,7 @@ import javax.json.JsonObjectBuilder;
  * @author defre
  */
 public class DAOPoliza {
-    //private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
-    private static final String url = "jdbc:postgresql://4.tcp.eu.ngrok.io:13455/DBEmpresa";
+    private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
     

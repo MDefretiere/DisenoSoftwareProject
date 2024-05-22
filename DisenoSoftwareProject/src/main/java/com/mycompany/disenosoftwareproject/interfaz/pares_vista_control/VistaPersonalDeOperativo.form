@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="95" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="2" attributes="0">
+                  <Component id="consultarVacaciones" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="consultarEmergencia" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="consultarTurnos" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="solicitarCambioTurno" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="consultarDatos" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+              <Component id="consultarDatos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="consultarVacaciones" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="consultarEmergencia" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="consultarTurnos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="solicitarCambioTurno" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="68" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Personal de Operativo"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="consultarDatos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Consultar mis datos en la empresa"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="consultarVacaciones">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Consultar vacaciones"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="consultarEmergencia">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Consultar emergencia atendidas"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="consultarEmergencia.addActionListener(new ActionListener() {&#xa;&#xa;            @Override&#xa;            public void actionPerformed(ActionEvent e){&#xa;                try {&#xa;                    controlador.consultarEmergencia();&#xa;                } catch (Exception ex) {&#xa;                    System.out.println(ex.getMessage());&#xa;                    System.out.println(ex.getCause());&#xa;                }&#xa;            }&#xa;        });"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="consultarTurnos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Concultar mis turnos"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="solicitarCambioTurno">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Solicitar cambio de turno"/>
+      </Properties>
+    </Component>
+  </SubComponents>
+</Form>

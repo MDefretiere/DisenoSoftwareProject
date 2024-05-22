@@ -17,15 +17,12 @@ import javax.json.JsonObjectBuilder;
  * @author defre
  */
 public class DAOAsegurado {
-    //private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
-    private static final String url = "jdbc:postgresql://4.tcp.eu.ngrok.io:13455/DBEmpresa";
+    private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
     
     public static JsonObject comprobarAsegurado(JsonObject jsonInput) {
         JsonObject json = null;
-        
-        // Extraire les valeurs du JsonObject
         String nombre = jsonInput.getString("nombre");
         String apellidos = jsonInput.getString("apellidos");
         Fecha fechaNacimiento = Fecha.parseFecha(jsonInput.getString("fechaNacimiento"));

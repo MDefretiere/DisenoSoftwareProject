@@ -16,8 +16,7 @@ import javax.json.JsonObjectBuilder;
  * Auteur: defre
  */
 public class DAOEmpleado {
-    //private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
-    private static final String url = "jdbc:postgresql://4.tcp.eu.ngrok.io:13455/DBEmpresa";
+    private static final String url = "jdbc:derby://localhost:1527/DBEmpresa";
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
@@ -140,6 +139,34 @@ public class DAOEmpleado {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 employe = mapperResultSetToEmpleado(resultSet);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return employe;
+    }
+    
+    public static JsonObject comprobarLoginYContrasena(JsonObject jsonInput) {
+        JsonObject employe = null;
+        String id = jsonInput.getString("nif");
+        String password = jsonInput.getString("password");
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+                       "FROM EMPLEADO " +
+                       "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
+                       "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                       "WHERE EMPLEADO.NifCif = ? AND Empleado.password = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, id);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                employe = mapperResultSetToEmpleado(resultSet);
+            }
+            else{
+                return null;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

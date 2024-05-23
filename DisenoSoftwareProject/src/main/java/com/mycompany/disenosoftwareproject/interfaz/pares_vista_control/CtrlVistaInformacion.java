@@ -4,6 +4,7 @@
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
 
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
 import java.awt.Window;
 import javax.swing.SwingUtilities;
 

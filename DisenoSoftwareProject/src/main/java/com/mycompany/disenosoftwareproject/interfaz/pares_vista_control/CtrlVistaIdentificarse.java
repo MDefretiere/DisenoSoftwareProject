@@ -4,6 +4,11 @@
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
 
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaGerente;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaIdentificarse;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaOperador;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaPersonalDeOperativo;
 import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUIdentificarse;
 import java.awt.Window;
 import javax.swing.SwingUtilities;
@@ -28,7 +33,7 @@ public class CtrlVistaIdentificarse {
         });
     }
 
-    void introduceNIFYContrasena(String nif, String contrasena) throws Exception {
+    public void introduceNIFYContrasena(String nif, String contrasena) throws Exception {
         try{
             controlador.comprobarEmpleado(nif, contrasena);
         }
@@ -77,7 +82,7 @@ public class CtrlVistaIdentificarse {
         });
     }
 
-    void attenderLlamada() throws Exception {
+    public void attenderLlamada() throws Exception {
         controlador.attenderLlamada();
         for (Window window : Window.getWindows()) {
             if (window.isShowing()) {
@@ -86,7 +91,7 @@ public class CtrlVistaIdentificarse {
         }
     }
 
-    void consultarEmergencia() {
+    public void consultarEmergencia() {
         controlador.consultarEmergencia();
         for (Window window : Window.getWindows()) {
             if (window.isShowing()) {
@@ -95,7 +100,7 @@ public class CtrlVistaIdentificarse {
         }
     }
 
-    void modificarOperador() throws Exception {
+    public void modificarOperador() throws Exception {
         controlador.modificarOperador();
         for (Window window : Window.getWindows()) {
             if (window.isShowing()) {

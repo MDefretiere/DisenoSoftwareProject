@@ -4,6 +4,9 @@
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
 
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaAtenderLlamada;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaDescripcionYCriticaLlamada;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
 import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUAtenderLlamada;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Sexo;

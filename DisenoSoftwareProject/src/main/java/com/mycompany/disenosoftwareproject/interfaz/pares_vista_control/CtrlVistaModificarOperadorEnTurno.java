@@ -4,6 +4,10 @@
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
 
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacionConfirmacion;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaModificarOperadorEnTurno;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaConfirmacionModificarOperadorEnTurno;
 import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUModificarOperadorEnTurno;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;

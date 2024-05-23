@@ -2,6 +2,7 @@ package com.mycompany.disenosoftwareproject.persistencia;
 
 import com.mycompany.disenosoftwareproject.negocio.modelos.Direccion;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -68,7 +69,7 @@ public class DAOEmpleado {
     }
 
     // Mapping ResultSet to Empleado
-    private static JsonObject mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
+    private static JsonObjectBuilder mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
         String nombre = resultSet.getString("nombre");
         String apellidos = resultSet.getString("apellido");
         String nif = resultSet.getString("NIFCIF");
@@ -98,7 +99,7 @@ public class DAOEmpleado {
                 .add("fechaInicioEnEmpresa", fechaInicio)
                 .add("rol", rolBuilder);
 
-        return jsonBuilder.build();
+        return jsonBuilder;
     }
     
     public void enregistrerEmploye(JsonObject jsonInput) throws SQLException {
@@ -125,7 +126,7 @@ public class DAOEmpleado {
     }
 
     public static JsonObject obtenerEmpleadoPorId(JsonObject jsonInput) {
-        JsonObject employe = null;
+        JsonObjectBuilder employe = null;
         String id = jsonInput.getString("nif");
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
                        "FROM EMPLEADO " +
@@ -144,17 +145,18 @@ public class DAOEmpleado {
             ex.printStackTrace();
         }
 
-        return employe;
+        return employe.build();
     }
     
     public static JsonObject comprobarLoginYContrasena(JsonObject jsonInput) {
-        JsonObject employe = null;
+        JsonObjectBuilder employe = null;
         String id = jsonInput.getString("nif");
         String password = jsonInput.getString("password");
-        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
+        String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL, DISPONIBILIDADEMPLEADO.Estado " +
                        "FROM EMPLEADO " +
                        "JOIN ROLESENLAEMPRESA ON EMPLEADO.NIFCIF = ROLESENLAEMPRESA.NIFCIF " +
                        "JOIN ROLEMPLEADO ON ROLESENLAEMPRESA.ROL = ROLEMPLEADO.IDROL " +
+                       "JOIN DISPONIBILIDADEMPLEADO ON DISPONIBILIDADEMPLEADO.Empleado = EMPLEADO.NIFCIF " +
                        "WHERE EMPLEADO.NifCif = ? AND Empleado.password = ?";
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
@@ -164,6 +166,7 @@ public class DAOEmpleado {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 employe = mapperResultSetToEmpleado(resultSet);
+                employe.add("disponibilidad", resultSet.getInt("Estado"));
             }
             else{
                 return null;
@@ -172,6 +175,6 @@ public class DAOEmpleado {
             ex.printStackTrace();
         }
 
-        return employe;
+        return employe.build();
     }
 }

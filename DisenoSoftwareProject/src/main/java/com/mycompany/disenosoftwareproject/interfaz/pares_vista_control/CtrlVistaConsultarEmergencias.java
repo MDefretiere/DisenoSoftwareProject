@@ -4,6 +4,9 @@
  */
 package com.mycompany.disenosoftwareproject.interfaz.pares_vista_control;
 
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaConsultarEmergencias;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaDetallesActivacion;
+import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
 import com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso.ControladorCUConsultarEmergencias;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Activacion;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
@@ -32,7 +35,7 @@ public class CtrlVistaConsultarEmergencias {
         return controlador;
     }
 
-    List<Activacion> getActivacionesPorFecha(Date fecha) throws SQLException, Exception {
+    public List<Activacion> getActivacionesPorFecha(Date fecha) throws SQLException, Exception {
         try{
             Fecha f = Fecha.convertirLocalDateToFecha(fecha);
             return controladorCU.getActivacionesPorFecha(f);
@@ -47,7 +50,7 @@ public class CtrlVistaConsultarEmergencias {
         return null;
     }
 
-    void getDetallesActivacion(String string) throws SQLException {
+    public void getDetallesActivacion(String string) throws SQLException {
         Activacion a = Activacion.stringToActivacion(string);
         controladorCU.getDetallesActivacion(a);
     }

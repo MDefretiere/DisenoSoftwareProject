@@ -40,6 +40,9 @@ public class ControladorCUIdentificarse {
         if (json == null) {
             throw new Exception("ERROR : NIF o contrasena no valid.");
         }
+        if(json.getInt("disponibilidad")!=1){
+            throw new Exception("El empleado no esta disponible ahora");
+        }
         empleadoIdentificado = Empleado.jsonToEmpleado(json);
         if (empleadoIdentificado.getRol() instanceof Operador) {
             CtrlVistaIdentificarse.openOperadorVista();

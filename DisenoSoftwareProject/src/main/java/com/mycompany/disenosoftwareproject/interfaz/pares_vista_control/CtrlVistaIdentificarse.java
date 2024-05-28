@@ -26,7 +26,7 @@ public class CtrlVistaIdentificarse {
         return controladorVista;
     }
 
-    public static void open() {
+    public static void openIdentificarseVista() {
         SwingUtilities.invokeLater(() -> {
             VistaIdentificarse vistaIdentificarse = new VistaIdentificarse();
             vistaIdentificarse.setVisible(true);

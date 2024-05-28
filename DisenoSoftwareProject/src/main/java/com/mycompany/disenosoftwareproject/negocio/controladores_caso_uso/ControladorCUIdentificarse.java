@@ -28,7 +28,7 @@ public class ControladorCUIdentificarse {
     }
 
     public void start() {
-        CtrlVistaIdentificarse.open();
+        CtrlVistaIdentificarse.openIdentificarseVista();
     }
 
     public void comprobarEmpleado(String nif, String contrasena) throws Exception {

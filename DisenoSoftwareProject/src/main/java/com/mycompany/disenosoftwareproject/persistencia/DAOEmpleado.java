@@ -32,7 +32,7 @@ public class DAOEmpleado {
              PreparedStatement statement = conn.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                arrayBuilder.add(mapperResultSetToEmpleado(resultSet));
+                arrayBuilder.add(mapperResultSetToEmpleadoJson(resultSet));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -56,7 +56,7 @@ public class DAOEmpleado {
              PreparedStatement statement = conn.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                arrayBuilder.add(mapperResultSetToEmpleado(resultSet));
+                arrayBuilder.add(mapperResultSetToEmpleadoJson(resultSet));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -69,7 +69,7 @@ public class DAOEmpleado {
     }
 
     // Mapping ResultSet to Empleado
-    private static JsonObjectBuilder mapperResultSetToEmpleado(ResultSet resultSet) throws SQLException {
+    private static JsonObjectBuilder mapperResultSetToEmpleadoJson(ResultSet resultSet) throws SQLException {
         String nombre = resultSet.getString("nombre");
         String apellidos = resultSet.getString("apellido");
         String nif = resultSet.getString("NIFCIF");
@@ -139,7 +139,7 @@ public class DAOEmpleado {
             statement.setString(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                employe = mapperResultSetToEmpleado(resultSet);
+                employe = mapperResultSetToEmpleadoJson(resultSet);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -149,7 +149,7 @@ public class DAOEmpleado {
     }
     
     public static JsonObject comprobarLoginYContrasena(JsonObject jsonInput) {
-        JsonObjectBuilder employe = null;
+        JsonObjectBuilder empleadoJson = null;
         String id = jsonInput.getString("nif");
         String password = jsonInput.getString("password");
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL, DISPONIBILIDADEMPLEADO.Estado " +
@@ -165,8 +165,8 @@ public class DAOEmpleado {
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                employe = mapperResultSetToEmpleado(resultSet);
-                employe.add("disponibilidad", resultSet.getInt("Estado"));
+                empleadoJson = mapperResultSetToEmpleadoJson(resultSet);
+                empleadoJson.add("disponibilidad", resultSet.getInt("Estado"));
             }
             else{
                 return null;
@@ -175,6 +175,6 @@ public class DAOEmpleado {
             ex.printStackTrace();
         }
 
-        return employe.build();
+        return empleadoJson.build();
     }
 }

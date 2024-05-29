@@ -21,6 +21,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -32,9 +33,9 @@ public class DAOLlamada {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static JsonObject getMaxId() {
-        JsonObject json = null;
+    public static String getMaxId() {
         String query = "SELECT MAX(id) AS max_id FROM LLAMADAS";
+        JsonObjectBuilder jsonBuilder=null;
 
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse); PreparedStatement statement = conn.prepareStatement(query)) {
 
@@ -43,20 +44,22 @@ public class DAOLlamada {
             if (resultSet.next()) {
                 int maxId = resultSet.getInt("max_id");
 
-                JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                jsonBuilder = Json.createObjectBuilder()
                         .add("max_id", maxId);
-
-                json = jsonBuilder.build();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return json;
+        JsonObject json = jsonBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
-    public static void grabarNuevaLlamada(JsonObject jsonInput) throws Exception {
+    public static void grabarNuevaLlamada(String stringInput) throws Exception {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String query = "INSERT INTO LLAMADAS (ID, NumeroTelefonoOrigen, FechaInicio, HoraInicio, FechaFin, HoraFin, NombreComunicante) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         int id = jsonInput.getInt("id");
@@ -81,21 +84,22 @@ public class DAOLlamada {
         String tipoLlamada = jsonInput.getString("tipo");
         switch (tipoLlamada) {
             case "LlamadaCritica":
-                grabarNuevaLlamadaCritica(jsonInput);
+                grabarNuevaLlamadaCritica(jsonInput.toString());
                 break;
             case "LlamadaNoCritica":
-                grabarNuevaLlamadaNoCritica(jsonInput);
+                grabarNuevaLlamadaNoCritica(jsonInput.toString());
                 break;
             case "LlamadaInfundada":
-                grabarNuevaLlamadaInfundada(jsonInput);
+                grabarNuevaLlamadaInfundada(jsonInput.toString());
                 break;
             default:
                 throw new Exception("ERROR: tipo de llamada");
         }
     }
 
-    public static void grabarNuevaLlamadaCritica(JsonObject jsonInput) throws SQLException {
-        grabarNuevaLlamadaDeAsegurado(jsonInput);
+    public static void grabarNuevaLlamadaCritica(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
+        grabarNuevaLlamadaDeAsegurado(jsonInput.toString());
 
         String query = "INSERT INTO LLAMADASCRITICAS (ID) VALUES (?)";
         int id = jsonInput.getInt("id");
@@ -106,8 +110,9 @@ public class DAOLlamada {
         }
     }
 
-    public static void grabarNuevaLlamadaNoCritica(JsonObject jsonInput) throws SQLException {
-        grabarNuevaLlamadaDeAsegurado(jsonInput);
+    public static void grabarNuevaLlamadaNoCritica(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
+        grabarNuevaLlamadaDeAsegurado(jsonInput.toString());
 
         String query= null;
         int id = jsonInput.getInt("id");
@@ -136,11 +141,12 @@ public class DAOLlamada {
         JsonArray consejos = jsonInput.getJsonArray("consejos");
         for (int i = 0; i < consejos.size(); i++) {
             JsonObject consejo = consejos.getJsonObject(i);
-            grabarNuevoConsejo(consejo, id);
+            grabarNuevoConsejo(consejo.toString());
         }
     }
 
-    public static void grabarNuevaLlamadaDeAsegurado(JsonObject jsonInput) throws SQLException {
+    public static void grabarNuevaLlamadaDeAsegurado(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String query = "INSERT INTO LLAMADASASEGURADOS (ID, DescripcionDeLaEmergencia, Paciente) VALUES (?, ?, ?)";
         int id = jsonInput.getInt("id");
         String descripcionEmergencia = jsonInput.getString("descripcionEmergencia");
@@ -154,7 +160,8 @@ public class DAOLlamada {
         }
     }
 
-    public static void grabarNuevaLlamadaInfundada(JsonObject jsonInput) throws SQLException {
+    public static void grabarNuevaLlamadaInfundada(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String query = "INSERT INTO LLAMADASINFUNDADAS (ID) VALUES (?)";
         int id = jsonInput.getInt("id");
 
@@ -164,11 +171,13 @@ public class DAOLlamada {
         }
     }
 
-    public static void grabarNuevoConsejo(JsonObject consejo, int idLlamada) throws SQLException {
+    public static void grabarNuevoConsejo(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String query = "INSERT INTO CONSEJOS (Descripcion, Resultado, Soluciona, Llamada) VALUES (?, ?, ?, ?)";
-        String descripcion = consejo.getString("descripcion");
-        String resultado = consejo.getString("resultado");
-        boolean soluciona = consejo.getBoolean("soluciona");
+        String descripcion = jsonInput.getString("descripcion");
+        String resultado = jsonInput.getString("resultado");
+        boolean soluciona = jsonInput.getBoolean("soluciona");
+        int idLlamada = jsonInput.getInt("idLlamada");
 
         try (Connection connection = DriverManager.getConnection(url, utilisateur, motDePasse); PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, descripcion);

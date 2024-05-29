@@ -1,7 +1,7 @@
-Tue May 28 11:14:45 CEST 2024 : Apache Derby Network Server - 10.14.2.0 - (1828579) démarré et prêt à accepter les connexions sur le port 1527
+Wed May 29 14:02:52 CEST 2024 : Apache Derby Network Server - 10.14.2.0 - (1828579) démarré et prêt à accepter les connexions sur le port 1527
 ----------------------------------------------------------------
-Tue May 28 11:14:45 CEST 2024:
-Amorçage de Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579) : instance a816c00e-018f-be7b-0843-fffffa442c57 
+Wed May 29 14:02:52 CEST 2024:
+Amorçage de Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579) : instance a816c00e-018f-c43b-4d11-fffffa442c57 
 dans le répertoire de base de données C:\Users\defre\OneDrive\Documents\Dev\Espagne\Diseno\DisenoSoftwareProject\DisenoSoftwareProject\DBEmpresa avec le chargeur de classe jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93
 Chargé de file:/C:/Users/defre/OneDrive/Documents/Dev/Espagne/Diseno/db-derby-10.14.2.0-bin/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -12,3 +12,9 @@ os.arch=amd64
 os.version=10.0
 derby.system.home=C:\Users\defre\OneDrive\Documents\Dev\Espagne\Diseno\DisenoSoftwareProject\DisenoSoftwareProject
 Chargeur de classe de la base de données démarré - derby.database.classpath = ''
+----------------------------------------------------------------
+Wed May 29 14:18:10 CEST 2024 : fermeture du moteur Derby
+----------------------------------------------------------------
+Wed May 29 14:18:10 CEST 2024:
+Fermeture de l'instance a816c00e-018f-c43b-4d11-fffffa442c57 sur le répertoire de base de données C:\Users\defre\OneDrive\Documents\Dev\Espagne\Diseno\DisenoSoftwareProject\DisenoSoftwareProject\DBEmpresa avec le chargeur de classe jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93 
+----------------------------------------------------------------

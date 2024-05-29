@@ -14,6 +14,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -25,7 +26,8 @@ public class DAOTurnoDeOperativo {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static JsonObject getTurnosPorConductorYFecha(JsonObject jsonInput) throws SQLException {
+    public static String getTurnosPorConductorYFecha(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String nif = jsonInput.getString("nif");
         Fecha fechaTurno = Fecha.parseFecha(jsonInput.getString("fechaTurno"));
         JsonObjectBuilder turnoBuilder = Json.createObjectBuilder();
@@ -51,8 +53,11 @@ public class DAOTurnoDeOperativo {
                 turnoBuilder.add("IDTurnoOperativo", -1);
             }
         }
-
-        return turnoBuilder.build();
+        JsonObject json = turnoBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
 }

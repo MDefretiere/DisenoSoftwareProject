@@ -11,6 +11,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  * Auteur: defre
@@ -20,7 +21,8 @@ public class DAOTurnoDeOperador {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static JsonObject getTurnosPorFecha(JsonObject jsonInput) throws SQLException {
+    public static String getTurnosPorFecha(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         JsonArrayBuilder turnosArrayBuilder = Json.createArrayBuilder();
 
@@ -47,7 +49,7 @@ public class DAOTurnoDeOperador {
 
                 JsonArrayBuilder operadoresArrayBuilder = Json.createArrayBuilder();
                 String operadorId = resultSet.getString("NIFCIF");
-                JsonObject operadorJson = DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("nif", operadorId).build());
+                String operadorJson = DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("nif", operadorId).build().toString());
                 operadoresArrayBuilder.add(operadorJson);
 
                 turnoBuilder.add("OPERADORES", operadoresArrayBuilder);
@@ -55,10 +57,14 @@ public class DAOTurnoDeOperador {
             }
         }
         jsonBuilder.add("turnos", turnosArrayBuilder);
-        return jsonBuilder.build();
+        JsonObject json = jsonBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
     
-    public static JsonObject mapperResultSetToTurnoDeOperador(ResultSet resultSet) throws SQLException {
+    public static String mapperResultSetToTurnoDeOperador(ResultSet resultSet) throws SQLException {
         int idTurno = resultSet.getInt("IDTURNOOPERADOR");
         String fechaCreaciontoString = resultSet.getString("fechaCreacion");
         java.sql.Date fechaCreacionSQL = java.sql.Date.valueOf(fechaCreaciontoString);
@@ -67,8 +73,8 @@ public class DAOTurnoDeOperador {
         java.sql.Date fechaTurnoSQL = java.sql.Date.valueOf(fechaTurnotoString);
         Fecha fechaTurno = Fecha.convertirDateSQLToLocalDate(fechaTurnoSQL);
         String sTipo = resultSet.getString("NOMBRETIPOTURNO");
-        JsonObject jsonEmpleado = DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("id", resultSet.getString("NIFCIF")).build());
-
+        JsonObject jsonEmpleado = JsonParser.stringToJson(DAOEmpleado.obtenerEmpleadoPorId(Json.createObjectBuilder().add("id", resultSet.getString("NIFCIF")).build().toString()));
+        
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
                 .add("idTurno", idTurno)
                 .add("fechaCreacion", fechaCreacion.toString())
@@ -80,11 +86,15 @@ public class DAOTurnoDeOperador {
                                 .add("nombre", jsonEmpleado.getString("nombre"))
                         )
                 );
-
-        return jsonBuilder.build();
+        JsonObject json = jsonBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
-    public static void modificarOperadorEnTurno(JsonObject jsonInput) throws SQLException {
+    public static void modificarOperadorEnTurno(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String query = "UPDATE OPERADORESENTURNO SET NifCif = ? WHERE IdTurnoOperador = ? AND NifCif = ?";
 
         String nuevoNif = jsonInput.getString("nifNuevoEmpleado");
@@ -102,7 +112,8 @@ public class DAOTurnoDeOperador {
         }
     }
 
-    public static JsonObject getTurnosDelOperadorPorUnDia(JsonObject jsonInput) throws SQLException {
+    public static String getTurnosDelOperadorPorUnDia(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         JsonArrayBuilder turnosArrayBuilder = Json.createArrayBuilder();
 
@@ -132,6 +143,10 @@ public class DAOTurnoDeOperador {
             }
         }
         jsonBuilder.add("turnos", turnosArrayBuilder);
-        return jsonBuilder.build();
+        JsonObject json = jsonBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 }

@@ -181,6 +181,10 @@ public class VistaDetallesActivacion extends javax.swing.JFrame {
         jTextField2.setText(nombreVia);
         jTextField3.setText(fecha.toString());
         jTextField4.setText(hora.toString());
+        jTextField1.setEnabled(false);
+        jTextField2.setEnabled(false);
+        jTextField3.setEnabled(false);
+        jTextField4.setEnabled(false);
         if(trasladoHospital){
             jLabel5.setText("Se decidió traslado al hospital");
         }

@@ -6,6 +6,7 @@ package com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso;
 
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaAtenderLlamada;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaConsejosYResultados;
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaIdentificarse;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaInformacion;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaRegistrarLlamadaEntrante;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Asegurado;
@@ -28,6 +29,7 @@ import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import com.mycompany.disenosoftwareproject.persistencia.DAOLlamada;
 import com.mycompany.disenosoftwareproject.persistencia.DAOPoliza;
 import com.mycompany.disenosoftwareproject.persistencia.DAOTurnoDeOperador;
+import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,9 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import javax.json.JsonValue;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -74,7 +78,10 @@ public class ControladorCUAtenderLlamada {
     public void registrarNuevaLlamada() throws SQLException, Exception {
         List<TurnoDeOperador> turnosDelOperador = getTurnosDelOperadorPorUnDia(operadorEnTurno, Fecha.getFechaActual());
         if(turnosDelOperador.isEmpty()){
-            throw new Exception("ERROR : el operador no tiene turno hoy");
+            turnosDelOperador = getTurnosDelOperadorPorUnDia(operadorEnTurno, Fecha.getFechaActual().diaAnterior());
+            if(turnosDelOperador.isEmpty() || turnosDelOperador.get(0).getTipo()!=TipoDeTurnoOperador.DeNoche23){
+                throw new Exception("ERROR : el operador no tiene turno hoy");
+            }
         }
         boolean isOperadorEnTurno = false;
         for(TurnoDeOperador t : turnosDelOperador){
@@ -122,11 +129,11 @@ public class ControladorCUAtenderLlamada {
             horaFinLlamada = Hora.getCurrentHora();
             LlamadaInfundada llamadaInfundada = new LlamadaInfundada(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno);
             grabarNuevaLlamada(llamadaInfundada);
-            CtrlVistaInformacion.mostrarInformacion("ERROR : numero de poliza no exista : Redirijar llamada al 112");
+            throw new Exception("ERROR : numero de poliza no exista : Redirijar llamada al 112");
         }
         paciente = comprobarAsegurado(nombre, apellidos, fechaNacimiento, sexo);
         if(paciente==null){
-            CtrlVistaInformacion.mostrarInformacion("ERROR : la persona indicada en el formulario no es asegurada.");
+            throw new Exception("ERROR : la persona indicada en el formulario no es asegurada.");
         }
         boolean checkPacientePoliza = comprobarPacienteConPoliza(paciente.getNif(), poliza.getNumero());
         if(!checkPacientePoliza){
@@ -134,7 +141,7 @@ public class ControladorCUAtenderLlamada {
             horaFinLlamada = Hora.getCurrentHora();
             LlamadaInfundada llamadaInfundada = new LlamadaInfundada(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno);
             grabarNuevaLlamada(llamadaInfundada);
-            CtrlVistaInformacion.mostrarInformacion("ERROR : numero de poliza no corresponde con el paciente : Redirijar llamada al 112");
+            throw new Exception("ERROR : numero de poliza no corresponde con el paciente : Redirijar llamada al 112.");
         }
         else{
             CtrlVistaAtenderLlamada.preguntarDescripcionYEstado();
@@ -148,12 +155,12 @@ public class ControladorCUAtenderLlamada {
             horaFinLlamada = Hora.getCurrentHora();
             LlamadaCritica llamadaCritica = new LlamadaCritica(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno, descripcion, paciente);
             grabarNuevaLlamada(llamadaCritica);
+            CtrlVistaIdentificarse.openOperadorVista();
             CtrlVistaInformacion.mostrarInformacion("ATENCION : Emergencia critica : Redirijar llamada al 112");
         }
         else{
             CtrlVistaConsejosYResultados.openWindow();
         }
-        
     }
 
     public void introduceInformacionesConsejos(boolean necesitaOperativa, String descripcionConsejo, String resultado, boolean soluciona) throws Exception {
@@ -162,6 +169,7 @@ public class ControladorCUAtenderLlamada {
             horaFinLlamada = Hora.getCurrentHora();
             LlamadaNoCritica llamada = new LlamadaNoCritica(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno, descripcion, paciente, true, consejos, 1);
             grabarNuevaLlamada(llamada);
+            CtrlVistaIdentificarse.openOperadorVista();
             CtrlVistaInformacion.mostrarInformacion("Llamada grabada");
         }
         else{
@@ -171,6 +179,7 @@ public class ControladorCUAtenderLlamada {
                 horaFinLlamada = Hora.getCurrentHora();
                 LlamadaNoCritica llamada = new LlamadaNoCritica(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno, descripcion, paciente, false, consejos, -1);
                 grabarNuevaLlamada(llamada);
+                CtrlVistaIdentificarse.openOperadorVista();
                 CtrlVistaInformacion.mostrarInformacion("Llamada grabada");
             }
             else{
@@ -181,7 +190,7 @@ public class ControladorCUAtenderLlamada {
     
     public static void grabarNuevaLlamada(Llamada llamada) throws Exception{
         JsonObject jsonLlamada = createJsonLlamada(llamada);
-        DAOLlamada.grabarNuevaLlamada(jsonLlamada);
+        DAOLlamada.grabarNuevaLlamada(jsonLlamada.toString());
     }
 
     private static JsonObject createJsonLlamada(Llamada llamada) {
@@ -205,6 +214,7 @@ public class ControladorCUAtenderLlamada {
                 jsonBuilderConsejo.add("descripcion", c.getDescripcion());
                 jsonBuilderConsejo.add("resultado", c.getResultado());
                 jsonBuilderConsejo.add("soluciona", c.isSoluciona());
+                jsonBuilderConsejo.add("idLlamada", llamada.getId());
                 consejosArrayBuilder.add(jsonBuilderConsejo);
             }
             jsonBuilder.add("consejos", consejosArrayBuilder);
@@ -219,7 +229,7 @@ public class ControladorCUAtenderLlamada {
     }
     
     public static int getMaxId(){
-        JsonObject json = DAOLlamada.getMaxId();
+        JsonObject json = JsonParser.stringToJson(DAOLlamada.getMaxId());
         int maxId = -1;
         if (json != null && json.containsKey("max_id")) {
             maxId = json.getInt("max_id");
@@ -228,7 +238,7 @@ public class ControladorCUAtenderLlamada {
     }
     
     public static List<Poliza> getAllPolizas(){
-        JsonObject json = DAOPoliza.getAllPoliza();
+        JsonObject json = JsonParser.stringToJson(DAOPoliza.getAllPoliza());
         JsonArray jsonArray = json.getJsonArray("polizas"); // Utilise la clé correcte
         
         List<Poliza> polizas = new ArrayList<>();
@@ -258,7 +268,7 @@ public class ControladorCUAtenderLlamada {
         return jsonBuilder.build();
     }
 
-    public static Asegurado comprobarAsegurado(String nombre, String apellidos, Fecha fechaNacimiento, Sexo sexo) {
+    public Asegurado comprobarAsegurado(String nombre, String apellidos, Fecha fechaNacimiento, Sexo sexo) {
         JsonObject jsonInput = Json.createObjectBuilder()
             .add("nombre", nombre)
             .add("apellidos", apellidos)
@@ -266,11 +276,11 @@ public class ControladorCUAtenderLlamada {
             .add("sexo", sexo.toString())
             .build();
 
-        JsonObject json = DAOAsegurado.comprobarAsegurado(jsonInput);
-        if (json == null) {
+        String jsonString = DAOAsegurado.comprobarAsegurado(jsonInput.toString());
+        if (jsonString == "" || jsonString==null) {
             return null;
         }
-        return convertirDesdeJson(json);
+        return convertirDesdeJson(JsonParser.stringToJson(jsonString));
     }
 
     public static Asegurado convertirDesdeJson(JsonObject json) {
@@ -292,14 +302,14 @@ public class ControladorCUAtenderLlamada {
             .add("numeroPoliza", numero)
             .build();
 
-        return DAOAsegurado.comprobarPacienteConPoliza(jsonInput).getBoolean("existe");
+        return JsonParser.stringToJson(DAOAsegurado.comprobarPacienteConPoliza(jsonInput.toString())).getBoolean("existe");
     }
     
     public static Empleado getEmpleadoPorId(String nifcif) throws Exception {
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         jsonBuilder.add("nif", nifcif);
         JsonObject jsonParam = jsonBuilder.build();
-        JsonObject jsonEmpleado = DAOEmpleado.obtenerEmpleadoPorId(jsonParam);
+        JsonObject jsonEmpleado = JsonParser.stringToJson(DAOEmpleado.obtenerEmpleadoPorId(jsonParam.toString()));
         return jsonToEmpleado(jsonEmpleado);
     }
     
@@ -309,7 +319,7 @@ public class ControladorCUAtenderLlamada {
         jsonBuilder.add("fecha", fechaActual.toString());
         jsonBuilder.add("nif", operadorEnTurno.getNif());
         JsonObject jsonParam = jsonBuilder.build();
-        JsonObject jsonTurnos = DAOTurnoDeOperador.getTurnosDelOperadorPorUnDia(jsonParam);
+        JsonObject jsonTurnos = JsonParser.stringToJson(DAOTurnoDeOperador.getTurnosDelOperadorPorUnDia(jsonParam.toString()));
         JsonArray turnosArray = jsonTurnos.getJsonArray("turnos");
 
         for (JsonValue turnoJson : turnosArray) {

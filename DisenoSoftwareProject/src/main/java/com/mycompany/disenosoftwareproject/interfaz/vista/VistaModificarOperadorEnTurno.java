@@ -155,7 +155,7 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
                     Date fecha = jDateChooser1.getDate();
                     List<Empleado> list = controladorVista.getTurnosPorFecha(fecha);
                     jComboBox1.removeAllItems();
-                    if (!list.isEmpty()) {
+                    if (!list.isEmpty() || list==null) {
                         for (Empleado emp : list) {
                             jComboBox1.addItem(emp.getNombre() + " " + emp.getApellidos()+", NIF:"+emp.getNif()+", Telefono:"+emp.getTelefono());
                         }

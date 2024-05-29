@@ -31,16 +31,17 @@ public class CtrlVistaAtenderLlamada {
         });
     }
     
-    public void introduceInformaciones(String numeroTelefono, String nombreComunicante, String numeroDePoliza, String nombre, String apeellidos, Sexo sexo, Fecha fechaNacimiento) throws Exception{
+    public void introduceInformaciones(String numeroTelefono, String nombreComunicante, String numeroDePoliza, String nombre, String apellidos, Sexo sexo, Fecha fechaNacimiento) throws Exception{
         try{
-            controlador.introduceInformaciones(numeroTelefono, nombreComunicante, numeroDePoliza, nombre, apeellidos, sexo, fechaNacimiento);
+            if("".equals(numeroDePoliza) || "".equals(nombre) || "".equals(apellidos)){
+                CtrlVistaInformacion.mostrarInformacion("Debe completar toda la información obligatoria.");
+            }
+            else{
+                controlador.introduceInformaciones(numeroTelefono, nombreComunicante, numeroDePoliza, nombre, apellidos, sexo, fechaNacimiento);
+            }
         }
         catch(Exception e){
-            SwingUtilities.invokeLater(() -> {
-                VistaInformacion vistaError = new VistaInformacion();
-                vistaError.setErrorMessage(e.getMessage());
-                vistaError.setVisible(true);
-            });
+            CtrlVistaInformacion.mostrarError(e.getMessage());
         }
     }
     
@@ -61,11 +62,7 @@ public class CtrlVistaAtenderLlamada {
             controlador.introduceDescripcionYEstado(descripcion, estado);
         }
         catch(Exception e){
-            SwingUtilities.invokeLater(() -> {
-                VistaInformacion vistaError = new VistaInformacion();
-                vistaError.setErrorMessage(e.getMessage());
-                vistaError.setVisible(true);
-            });
+            CtrlVistaInformacion.mostrarError(e.getMessage());
         }
     }
 }

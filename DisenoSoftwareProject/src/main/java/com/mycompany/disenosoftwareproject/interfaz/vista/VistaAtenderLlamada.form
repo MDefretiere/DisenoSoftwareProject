@@ -52,7 +52,7 @@
                       <Component id="btnEnviarInformacion" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="35" max="32767" attributes="0"/>
+              <EmptySpace pref="27" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -133,7 +133,7 @@
         <Property name="text" type="java.lang.String" value="Enviar"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnEnviarInformacion.addActionListener(new ActionListener() {&#xa;&#xa;@Override&#xa;public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            Sexo s ;&#xa;            if(sexo.getSelectedItem()==&quot;Masculino&quot;){&#xa;                s = Sexo.hombre;&#xa;            }&#xa;            else{&#xa;                s = Sexo.mujer;&#xa;            }&#xa;            if(fechaNacimientoPaciente.getDate()==null){&#xa;                SwingUtilities.invokeLater(() -&gt; {&#xa;                    VistaInformacion vistaError = new VistaInformacion();&#xa;                    vistaError.setErrorMessage(&quot;ERROR : Fecha no valida&quot;);&#xa;                    vistaError.setVisible(true);&#xa;                });&#xa;            }&#xa;            Fecha fecha = Fecha.convertirLocalDateToFecha(fechaNacimientoPaciente.getDate());&#xa;            ctrlVista.introduceInformaciones(numeroDeTelefono.getText(), nombreComunicante.getText(), numeroPoliza.getText(), nombrePaciente.getText(), apellidosPaciente.getText(), s, fecha);&#xa;&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnEnviarInformacion.addActionListener(new ActionListener() {&#xa;&#xa;@Override&#xa;public void actionPerformed(ActionEvent e){&#xa;        try {&#xa;            Sexo s ;&#xa;            if(sexo.getSelectedItem()==&quot;Masculino&quot;){&#xa;                s = Sexo.hombre;&#xa;            }&#xa;            else{&#xa;                s = Sexo.mujer;&#xa;            }&#xa;            if(fechaNacimientoPaciente.getDate()==null){&#xa;                CtrlVistaInformacion.mostrarInformacion(&quot;ERROR : Fecha no valida&quot;);&#xa;            }&#xa;            Fecha fecha = Fecha.convertirLocalDateToFecha(fechaNacimientoPaciente.getDate());&#xa;            ctrlVista.introduceInformaciones(numeroDeTelefono.getText(), nombreComunicante.getText(), numeroPoliza.getText(), nombrePaciente.getText(), apellidosPaciente.getText(), s, fecha);&#xa;&#xa;        } catch (Exception ex) {&#xa;            System.out.println(ex.getMessage());&#xa;            System.out.println(ex.getCause());&#xa;        }&#xa;    }&#xa;});"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
@@ -148,27 +148,27 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Numero de poliza que cubre"/>
+        <Property name="text" type="java.lang.String" value="Numero de poliza que cubre *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Nombre"/>
+        <Property name="text" type="java.lang.String" value="Nombre *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apellidos"/>
+        <Property name="text" type="java.lang.String" value="Apellidos *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Sexo"/>
+        <Property name="text" type="java.lang.String" value="Sexo *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Fecha de nacimiento"/>
+        <Property name="text" type="java.lang.String" value="Fecha de nacimiento *"/>
       </Properties>
     </Component>
   </SubComponents>

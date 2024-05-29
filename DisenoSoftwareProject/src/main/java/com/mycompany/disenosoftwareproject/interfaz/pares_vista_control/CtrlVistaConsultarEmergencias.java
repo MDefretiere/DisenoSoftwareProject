@@ -41,18 +41,19 @@ public class CtrlVistaConsultarEmergencias {
             return controladorCU.getActivacionesPorFecha(f);
         }
         catch(Exception e){
-            SwingUtilities.invokeLater(() -> {
-                VistaInformacion vistaError = new VistaInformacion();
-                vistaError.setErrorMessage(e.getMessage());
-                vistaError.setVisible(true);
-            });
+            CtrlVistaInformacion.mostrarInformacion(e.getMessage());
         }
         return null;
     }
 
     public void getDetallesActivacion(String string) throws SQLException {
         Activacion a = Activacion.stringToActivacion(string);
-        controladorCU.getDetallesActivacion(a);
+        try{
+            controladorCU.getDetallesActivacion(a);
+        }catch(Exception e){
+            CtrlVistaInformacion.mostrarInformacion(e.getMessage());
+        }
+        
     }
     
     public static void muestrarDetallesActivacion(String descripcion, String nombreVia, Fecha fecha, Hora hora, boolean trasladoHospital){

@@ -64,16 +64,6 @@ public class VistaInformacion extends javax.swing.JFrame {
                 .addContainerGap(62, Short.MAX_VALUE))
         );
 
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Récupérer la fenêtre parent et la fermer
-                java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(jButton1);
-                if (parentWindow != null) {
-                    parentWindow.dispose();
-                }
-            }
-        });
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -111,19 +101,30 @@ public class VistaInformacion extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void setErrorMessage(String message){
+
+    public void setErrorMessage(String message) {
         jTextArea1.setText(message);
     }
-    
-    public void mostrarInformacion(String message){
+
+    public void mostrarInformacion(String message) {
+        jTextArea1.setText(message);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(jButton1);
+                if (parentWindow != null) {
+                    parentWindow.dispose();
+                }
+            }
+        });
+    }
+
+    public void mostrarError(String message) {
         jTextArea1.setText(message);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 System.exit(0);
             }
         });
-
     }
 
 

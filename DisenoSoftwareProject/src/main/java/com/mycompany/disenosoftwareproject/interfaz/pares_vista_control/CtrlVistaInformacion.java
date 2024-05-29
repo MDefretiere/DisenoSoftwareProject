@@ -20,4 +20,12 @@ public class CtrlVistaInformacion {
             vistaInformacion.setVisible(true);
         });
     }
+    
+    public static void mostrarError(String message){
+        SwingUtilities.invokeLater(() -> {
+            VistaInformacion vistaInformacion = new VistaInformacion();
+            vistaInformacion.mostrarError(message);
+            vistaInformacion.setVisible(true);
+        });
+    }
 }

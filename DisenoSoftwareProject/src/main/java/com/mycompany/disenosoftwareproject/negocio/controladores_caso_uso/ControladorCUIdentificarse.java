@@ -13,6 +13,7 @@ import com.mycompany.disenosoftwareproject.negocio.modelos.Operador;
 import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import javax.json.Json;
 import javax.json.JsonObject;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -36,7 +37,15 @@ public class ControladorCUIdentificarse {
                 .add("nif", nif)
                 .add("password", contrasena)
                 .build();
-        JsonObject json = DAOEmpleado.comprobarLoginYContrasena(jsonLogin);
+        String jsonSEmpleado = DAOEmpleado.obtenerEmpleadoPorId(jsonLogin.toString());
+        if(jsonSEmpleado==null || jsonSEmpleado.equals("")){
+            throw new Exception("ERROR : NIF no existe en la base de datos.");
+        }
+        String jsonS = DAOEmpleado.comprobarLoginYContrasena(jsonLogin.toString());
+        if(jsonS==null || jsonS.equals("")){
+            throw new Exception("ERROR : Contrasena no valid.");
+        }
+        JsonObject json = JsonParser.stringToJson(jsonS);
         if (json == null) {
             throw new Exception("ERROR : NIF o contrasena no valid.");
         }
@@ -56,9 +65,9 @@ public class ControladorCUIdentificarse {
     }
 
     public void consultarEmergencia() {
-        ControladorCUConsultarEmergencias controlador = ControladorCUConsultarEmergencias.getInstance();
-        controlador.setEmpleadoIdentificado(empleadoIdentificado);
-        controlador.start();
+        ControladorCUConsultarEmergencias controladorCU = ControladorCUConsultarEmergencias.getInstance();
+        controladorCU.setEmpleadoIdentificado(empleadoIdentificado);
+        controladorCU.start();
     }
 
     public void attenderLlamada() throws Exception {
@@ -68,6 +77,8 @@ public class ControladorCUIdentificarse {
     }
 
     public void modificarOperador() throws Exception {
-        ControladorCUModificarOperadorEnTurno.start();
+        ControladorCUModificarOperadorEnTurno controladorCU = ControladorCUModificarOperadorEnTurno.getInstance();
+        controladorCU.setEmpleadoIdentificado(empleadoIdentificado);
+        controladorCU.start();
     }
 }

@@ -22,11 +22,7 @@ public class CtrlVistaRegistrarLlamadaEntrante {
             controlador.registrarNuevaLlamada();
         }
         catch(Exception e){
-            SwingUtilities.invokeLater(() -> {
-                VistaInformacion vistaError = new VistaInformacion();
-                vistaError.setErrorMessage(e.getMessage());
-                vistaError.setVisible(true);
-            });
+            CtrlVistaInformacion.mostrarError(e.getMessage());
         }
     }
     

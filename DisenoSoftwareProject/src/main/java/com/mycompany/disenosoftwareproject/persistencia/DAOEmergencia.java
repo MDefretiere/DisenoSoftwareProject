@@ -15,6 +15,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -26,7 +27,8 @@ public class DAOEmergencia {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static JsonObject getActivacionesPorTurno(JsonObject jsonInput) throws SQLException {
+    public static String getActivacionesPorTurno(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         int idTurno = jsonInput.getInt("idTurno");
         JsonObjectBuilder turnoBuilder = Json.createObjectBuilder();
         JsonArrayBuilder activacionesArrayBuilder = Json.createArrayBuilder();
@@ -58,12 +60,16 @@ public class DAOEmergencia {
                 activacionesArrayBuilder.add(activacionBuilder);
             }
         }
-
         turnoBuilder.add("activaciones", activacionesArrayBuilder);
-        return turnoBuilder.build();
+        JsonObject json = turnoBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
-    public static JsonObject getDetallesActivaciones(JsonObject jsonInput) throws SQLException {
+    public static String getDetallesActivaciones(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         int idActivacion = jsonInput.getInt("idActivacion");
         JsonObjectBuilder activacionBuilder = Json.createObjectBuilder();
 
@@ -87,12 +93,13 @@ public class DAOEmergencia {
                         .add("horaSeHaceCargoMedico", resultSet.getString("HoraSeHaceCargoMedico"))
                         .add("decisionTrasladoAHospital", resultSet.getInt("DecisionTrasladoAHospital"));
             } else {
-                // Si aucune ligne n'est trouvée, retourner un objet JSON avec un ID -1
                 activacionBuilder.add("IDActivacion", -1);
             }
         }
-
-        return activacionBuilder.build();
+        JsonObject json = activacionBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
-
 }

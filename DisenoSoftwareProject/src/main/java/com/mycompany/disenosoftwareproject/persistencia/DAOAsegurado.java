@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -21,8 +22,9 @@ public class DAOAsegurado {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
     
-    public static JsonObject comprobarAsegurado(JsonObject jsonInput) {
+    public static String comprobarAsegurado(String stringInput) {
         JsonObject json = null;
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String nombre = jsonInput.getString("nombre");
         String apellidos = jsonInput.getString("apellidos");
         Fecha fechaNacimiento = Fecha.parseFecha(jsonInput.getString("fechaNacimiento"));
@@ -59,13 +61,16 @@ public class DAOAsegurado {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return json;
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
-    public static JsonObject comprobarPacienteConPoliza(JsonObject jsonInput) {
+    public static String comprobarPacienteConPoliza(String stringInput) {
         JsonObject json = null;
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
 
-        // Extraire les valeurs du JsonObject
         String nif = jsonInput.getString("nif");
         String numero = jsonInput.getString("numeroPoliza");
 
@@ -87,6 +92,9 @@ public class DAOAsegurado {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return json;
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 }

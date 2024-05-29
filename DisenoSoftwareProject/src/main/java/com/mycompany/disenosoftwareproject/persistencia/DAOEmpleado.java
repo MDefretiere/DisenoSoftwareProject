@@ -12,6 +12,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  * Auteur: defre
@@ -21,7 +22,7 @@ public class DAOEmpleado {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
 
-    public static JsonObject getAllEmpleados() {
+    public static String getAllEmpleados() {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
                        "FROM EMPLEADO " +
@@ -40,11 +41,14 @@ public class DAOEmpleado {
 
         JsonObjectBuilder resultBuilder = Json.createObjectBuilder();
         resultBuilder.add("empleados", arrayBuilder);
-
-        return resultBuilder.build();
+        JsonObject json = resultBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
     
-    public static JsonObject getAllOperadores() {
+    public static String getAllOperadores() {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
                        "FROM EMPLEADO " +
@@ -64,8 +68,11 @@ public class DAOEmpleado {
 
         JsonObjectBuilder resultBuilder = Json.createObjectBuilder();
         resultBuilder.add("empleados", arrayBuilder);
-
-        return resultBuilder.build();
+        JsonObject json = resultBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 
     // Mapping ResultSet to Empleado
@@ -102,7 +109,8 @@ public class DAOEmpleado {
         return jsonBuilder;
     }
     
-    public void enregistrerEmploye(JsonObject jsonInput) throws SQLException {
+    public void enregistrerEmploye(String stringInput) throws SQLException {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         String sql = "INSERT INTO EMPLEADO (nif, nombre, apellidos, fechanacimiento, telefono) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, utilisateur, motDePasse);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -125,7 +133,8 @@ public class DAOEmpleado {
         }
     }
 
-    public static JsonObject obtenerEmpleadoPorId(JsonObject jsonInput) {
+    public static String obtenerEmpleadoPorId(String stringInput) {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         JsonObjectBuilder employe = null;
         String id = jsonInput.getString("nif");
         String query = "SELECT EMPLEADO.NIFCIF, EMPLEADO.PASSWORD, EMPLEADO.FECHAINICIOENEMPRESA, EMPLEADO.NOMBRE, EMPLEADO.APELLIDO, EMPLEADO.FECHANACIMIENTO, EMPLEADO.TELEFONO, ROLEMPLEADO.NOMBREROL, EMPLEADO.DIRECCIONPOSTAL, ROLESENLAEMPRESA.COMIENZOENROL " +
@@ -144,11 +153,18 @@ public class DAOEmpleado {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        return employe.build();
+        if(employe==null){
+            return null;
+        }
+        JsonObject json = employe.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
     
-    public static JsonObject comprobarLoginYContrasena(JsonObject jsonInput) {
+    public static String comprobarLoginYContrasena(String stringInput) {
+        JsonObject jsonInput = JsonParser.stringToJson(stringInput);
         JsonObjectBuilder empleadoJson = null;
         String id = jsonInput.getString("nif");
         String password = jsonInput.getString("password");
@@ -174,7 +190,10 @@ public class DAOEmpleado {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        return empleadoJson.build();
+        JsonObject json = empleadoJson.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 }

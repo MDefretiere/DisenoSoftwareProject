@@ -5,6 +5,7 @@
 package com.mycompany.disenosoftwareproject.interfaz.vista;
 
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaAtenderLlamada;
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaInformacion;
 import com.mycompany.disenosoftwareproject.interfaz.vista.VistaInformacion;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Sexo;
@@ -60,15 +61,15 @@ public class VistaAtenderLlamada extends javax.swing.JFrame {
 
         jLabel2.setText("Nombre del comunicante");
 
-        jLabel3.setText("Numero de poliza que cubre");
+        jLabel3.setText("Numero de poliza que cubre *");
 
-        jLabel4.setText("Nombre");
+        jLabel4.setText("Nombre *");
 
-        jLabel5.setText("Apellidos");
+        jLabel5.setText("Apellidos *");
 
-        jLabel6.setText("Sexo");
+        jLabel6.setText("Sexo *");
 
-        jLabel7.setText("Fecha de nacimiento");
+        jLabel7.setText("Fecha de nacimiento *");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,7 +99,7 @@ public class VistaAtenderLlamada extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(156, 156, 156)
                         .addComponent(btnEnviarInformacion)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,11 +152,7 @@ public class VistaAtenderLlamada extends javax.swing.JFrame {
                         s = Sexo.mujer;
                     }
                     if(fechaNacimientoPaciente.getDate()==null){
-                        SwingUtilities.invokeLater(() -> {
-                            VistaInformacion vistaError = new VistaInformacion();
-                            vistaError.setErrorMessage("ERROR : Fecha no valida");
-                            vistaError.setVisible(true);
-                        });
+                        CtrlVistaInformacion.mostrarInformacion("ERROR : Fecha no valida");
                     }
                     Fecha fecha = Fecha.convertirLocalDateToFecha(fechaNacimientoPaciente.getDate());
                     ctrlVista.introduceInformaciones(numeroDeTelefono.getText(), nombreComunicante.getText(), numeroPoliza.getText(), nombrePaciente.getText(), apellidosPaciente.getText(), s, fecha);

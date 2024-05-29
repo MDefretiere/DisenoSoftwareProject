@@ -50,11 +50,7 @@ public class CtrlVistaModificarOperadorEnTurno {
                 return list;
             }
         } catch (Exception e) {
-            SwingUtilities.invokeLater(() -> {
-                VistaInformacion vistaError = new VistaInformacion();
-                vistaError.setErrorMessage(e.getMessage());
-                vistaError.setVisible(true);
-            });
+            CtrlVistaInformacion.mostrarError(e.getMessage());
         }
         return list;
     }
@@ -72,6 +68,7 @@ public class CtrlVistaModificarOperadorEnTurno {
             dispos = controladorCU.getOperadoresDisponibles(nif);
             return dispos;
         } else {
+            CtrlVistaInformacion.mostrarInformacion("No empleado seleccionado");
             throw new Exception("No empleado seleccionado");
         }
     }
@@ -87,7 +84,7 @@ public class CtrlVistaModificarOperadorEnTurno {
             }
             controladorCU.modificarOperadorEnTurno(nif);
         } else {
-            throw new Exception("No empleado seleccionado");
+            CtrlVistaInformacion.mostrarInformacion("No empleado seleccionado");
         }
     }
 

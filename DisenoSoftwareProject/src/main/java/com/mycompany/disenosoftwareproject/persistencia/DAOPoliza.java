@@ -24,7 +24,7 @@ public class DAOPoliza {
     private static final String utilisateur = "root";
     private static final String motDePasse = "0000";
     
-    public static JsonObject getAllPoliza() {
+    public static String getAllPoliza() {
         JsonObjectBuilder resultBuilder = Json.createObjectBuilder(); 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder(); 
         String query = "SELECT numeroPoliza, fechaInicio, fechaVencimiento FROM POLIZAS";
@@ -48,7 +48,10 @@ public class DAOPoliza {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        return resultBuilder.build(); 
+        JsonObject json = resultBuilder.build();
+        if(json==null){
+            return null;
+        }
+        return json.toString();
     }
 }

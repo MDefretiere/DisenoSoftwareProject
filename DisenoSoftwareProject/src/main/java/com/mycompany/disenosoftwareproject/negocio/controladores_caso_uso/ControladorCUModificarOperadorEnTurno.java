@@ -4,15 +4,22 @@
  */
 package com.mycompany.disenosoftwareproject.negocio.controladores_caso_uso;
 
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaIdentificarse;
+import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaInformacion;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaModificarOperadorEnTurno;
 import com.mycompany.disenosoftwareproject.interfaz.pares_vista_control.CtrlVistaRegistrarLlamadaEntrante;
+import com.mycompany.disenosoftwareproject.negocio.modelos.Conductor;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Empleado;
 import static com.mycompany.disenosoftwareproject.negocio.modelos.Empleado.jsonToEmpleado;
 import com.mycompany.disenosoftwareproject.negocio.modelos.Fecha;
+import com.mycompany.disenosoftwareproject.negocio.modelos.Gerente;
+import com.mycompany.disenosoftwareproject.negocio.modelos.Medico;
+import com.mycompany.disenosoftwareproject.negocio.modelos.Operador;
 import com.mycompany.disenosoftwareproject.negocio.modelos.TipoDeTurnoOperador;
 import com.mycompany.disenosoftwareproject.negocio.modelos.TurnoDeOperador;
 import com.mycompany.disenosoftwareproject.persistencia.DAOEmpleado;
 import com.mycompany.disenosoftwareproject.persistencia.DAOTurnoDeOperador;
+import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +27,19 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonValue;
+import serviciosComunes.JsonParser;
 
 /**
  *
  * @author defre
  */
 public class ControladorCUModificarOperadorEnTurno {
+
     private static ControladorCUModificarOperadorEnTurno controlador = new ControladorCUModificarOperadorEnTurno();
+    private static Empleado empleadoIdentificado;
     private static Fecha fechaTurno;
     private static Empleado empleadoACambiar;
     private static Empleado nuevoEmpleado;
@@ -36,12 +48,16 @@ public class ControladorCUModificarOperadorEnTurno {
     private static TurnoDeOperador turnoAModificar;
     private static List<TurnoDeOperador> listTurnosPorFecha = new ArrayList<>();
     private static List<Empleado> allOperadores;
-    
-    public static ControladorCUModificarOperadorEnTurno getInstance(){
+
+    public static ControladorCUModificarOperadorEnTurno getInstance() {
         return controlador;
     }
-    
-    public static void start() throws Exception{
+
+    public void setEmpleadoIdentificado(Empleado e) {
+        empleadoIdentificado = e;
+    }
+
+    public void start() throws Exception {
         CtrlVistaModificarOperadorEnTurno.open();
     }
 
@@ -49,16 +65,18 @@ public class ControladorCUModificarOperadorEnTurno {
         listTurnosPorFecha.clear();
         listOperadoresEnTurno.clear();
         listTurnosPorFecha = getTurnosPorFecha(fecha);
-        if(listTurnosPorFecha.isEmpty()){
-            throw new Exception("No hay turno en ese dia.");
-        }
-        for (TurnoDeOperador t : listTurnosPorFecha) {
-            for (Empleado e : t.getListOperador()) {
-                listOperadoresEnTurno.add(e);
+        if (listTurnosPorFecha.isEmpty()) {
+            CtrlVistaInformacion.mostrarInformacion("No hay turno en ese dia.");
+        } else {
+            for (TurnoDeOperador t : listTurnosPorFecha) {
+                for (Empleado e : t.getListOperador()) {
+                    listOperadoresEnTurno.add(e);
+                }
             }
+            fechaTurno = fecha;
+            return (listOperadoresEnTurno);
         }
-        fechaTurno = fecha;
-        return (listOperadoresEnTurno);
+        return null;
     }
 
     public List<Empleado> getOperadoresDisponibles(String idOperador) throws SQLException, Exception {
@@ -102,7 +120,7 @@ public class ControladorCUModificarOperadorEnTurno {
     }
 
     public boolean isEmpleadoDispo(Empleado e, List<TurnoDeOperador> turnoAComprobar) {
-        boolean dispo=true;
+        boolean dispo = true;
         for (TurnoDeOperador t : turnoAComprobar) {
             for (Empleado test : t.getListOperador()) {
                 if (e.getNif().equals(test.getNif())) {
@@ -127,12 +145,12 @@ public class ControladorCUModificarOperadorEnTurno {
             modificarOperadorEnTurno(turnoAModificar, empleadoACambiar, nuevoEmpleado);
         }
     }
-    
+
     public static List<TurnoDeOperador> getTurnosPorFecha(Fecha fecha) throws SQLException, Exception {
         List<TurnoDeOperador> turnos = new ArrayList<>();
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         jsonBuilder.add("fecha", fecha.toString());
-        JsonArray turnosArray = DAOTurnoDeOperador.getTurnosPorFecha(jsonBuilder.build()).getJsonArray("turnos");
+        JsonArray turnosArray = JsonParser.stringToJson(DAOTurnoDeOperador.getTurnosPorFecha(jsonBuilder.build().toString())).getJsonArray("turnos");
 
         for (JsonValue turnoJson : turnosArray) {
             boolean exist = false;
@@ -142,9 +160,11 @@ public class ControladorCUModificarOperadorEnTurno {
                 if (t.getId() == idTurno) {
                     JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
                     for (JsonValue operadorJson : operadoresArray) {
-                        JsonObject operadorObj = (JsonObject) operadorJson;
-                        Empleado operador = Empleado.jsonToEmpleado(operadorObj);
-                        t.getListOperador().add(operador);
+                        JsonString jsonString = (JsonString) operadorJson;
+                        JsonReader jsonReader = Json.createReader(new StringReader(jsonString.getString()));
+                        JsonObject operadorObj = jsonReader.readObject();
+                        jsonReader.close();
+                        t.getListOperador().add(Empleado.jsonToEmpleado(operadorObj));
                     }
                     exist = true;
                 }
@@ -154,17 +174,23 @@ public class ControladorCUModificarOperadorEnTurno {
                 Fecha fechaTurno = Fecha.parseFecha(turnoObj.getString("FECHATURNO"));
                 TipoDeTurnoOperador tipoDeTurno;
                 switch (turnoObj.getString("NOMBRETIPOTURNO")) {
-                    case "DeManana7" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
-                    case "DeTarde15" -> tipoDeTurno = TipoDeTurnoOperador.DeTarde15;
-                    case "DeNoche23" -> tipoDeTurno = TipoDeTurnoOperador.DeNoche23;
-                    default -> throw new Exception("ERROR tipo de turno de Operador");
+                    case "DeManana7" ->
+                        tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                    case "DeTarde15" ->
+                        tipoDeTurno = TipoDeTurnoOperador.DeTarde15;
+                    case "DeNoche23" ->
+                        tipoDeTurno = TipoDeTurnoOperador.DeNoche23;
+                    default ->
+                        throw new Exception("ERROR tipo de turno de Operador");
                 }
                 JsonArray operadoresArray = turnoObj.getJsonArray("OPERADORES");
                 List<Empleado> operadores = new ArrayList<>();
                 for (JsonValue operadorJson : operadoresArray) {
-                    JsonObject operadorObj = (JsonObject) operadorJson;
-                    Empleado operador = Empleado.jsonToEmpleado(operadorObj);
-                    operadores.add(operador);
+                    JsonString jsonString = (JsonString) operadorJson;
+                    JsonReader jsonReader = Json.createReader(new StringReader(jsonString.getString()));
+                    JsonObject operadorObj = jsonReader.readObject();
+                    jsonReader.close();
+                    operadores.add(Empleado.jsonToEmpleado(operadorObj));
                 }
                 TurnoDeOperador turno = new TurnoDeOperador(idTurno, fechaCreacion, fechaTurno, tipoDeTurno, operadores);
                 turnos.add(turno);
@@ -179,7 +205,7 @@ public class ControladorCUModificarOperadorEnTurno {
         jsonBuilder.add("fecha", fechaActual.toString());
         jsonBuilder.add("nif", operadorEnTurno.getNif());
         JsonObject jsonParam = jsonBuilder.build();
-        JsonObject jsonTurnos = DAOTurnoDeOperador.getTurnosDelOperadorPorUnDia(jsonParam);
+        JsonObject jsonTurnos = JsonParser.stringToJson(DAOTurnoDeOperador.getTurnosDelOperadorPorUnDia(jsonParam.toString()));
         JsonArray turnosArray = jsonTurnos.getJsonArray("turnos");
 
         for (JsonValue turnoJson : turnosArray) {
@@ -191,10 +217,14 @@ public class ControladorCUModificarOperadorEnTurno {
 
             TipoDeTurnoOperador tipoDeTurno;
             switch (turnoObj.getString("NOMBRETIPOTURNO")) {
-                case "DeManana7" -> tipoDeTurno = TipoDeTurnoOperador.DeManana7;
-                case "DeTarde15" -> tipoDeTurno = TipoDeTurnoOperador.DeTarde15;
-                case "DeNoche23" -> tipoDeTurno = TipoDeTurnoOperador.DeNoche23;
-                default -> throw new SQLException("ERROR tipo de turno de Operador");
+                case "DeManana7" ->
+                    tipoDeTurno = TipoDeTurnoOperador.DeManana7;
+                case "DeTarde15" ->
+                    tipoDeTurno = TipoDeTurnoOperador.DeTarde15;
+                case "DeNoche23" ->
+                    tipoDeTurno = TipoDeTurnoOperador.DeNoche23;
+                default ->
+                    throw new SQLException("ERROR tipo de turno de Operador");
             }
 
             List<Empleado> operadores = new ArrayList<>();
@@ -212,12 +242,12 @@ public class ControladorCUModificarOperadorEnTurno {
         jsonBuilder.add("nifEmpleadoACambiar", empleadoACambiar.getNif());
         jsonBuilder.add("nifNuevoEmpleado", nuevoEmpleado.getNif());
         JsonObject jsonParam = jsonBuilder.build();
-        DAOTurnoDeOperador.modificarOperadorEnTurno(jsonParam);
+        DAOTurnoDeOperador.modificarOperadorEnTurno(jsonParam.toString());
     }
-    
-    public static List<Empleado> getAllOperadores () throws Exception {
+
+    public static List<Empleado> getAllOperadores() throws Exception {
         List<Empleado> empleados = new ArrayList<>();
-        JsonObject jsonAllEmpleados = DAOEmpleado.getAllOperadores();
+        JsonObject jsonAllEmpleados = JsonParser.stringToJson(DAOEmpleado.getAllOperadores());
         JsonArray jsonEmpleadosArray = jsonAllEmpleados.getJsonArray("empleados");
 
         for (int i = 0; i < jsonEmpleadosArray.size(); i++) {

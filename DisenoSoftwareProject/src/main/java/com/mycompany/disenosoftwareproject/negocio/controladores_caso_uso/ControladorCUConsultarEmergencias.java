@@ -18,6 +18,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import serviciosComunes.JsonParser;
 
 /**
  *
@@ -43,14 +44,14 @@ public class ControladorCUConsultarEmergencias {
         JsonObjectBuilder jsonInputFecha = Json.createObjectBuilder();
         jsonInputFecha.add("nif", empleadoIdentificado.getNif());
         jsonInputFecha.add("fechaTurno", fecha.toString());
-        JsonObject jsonTurno = DAOTurnoDeOperativo.getTurnosPorConductorYFecha(jsonInputFecha.build());
+        JsonObject jsonTurno = JsonParser.stringToJson(DAOTurnoDeOperativo.getTurnosPorConductorYFecha(jsonInputFecha.build().toString()));
         int idTurno = jsonTurno.getInt("IDTurnoOperativo");
         if(idTurno==-1){
-            throw new Exception("El operador no tiene turno en ese dia");
+            throw new Exception("El empleado no tiene turno en ese dia");
         }
         JsonObjectBuilder jsonInputTurno = Json.createObjectBuilder();
         jsonInputTurno.add("idTurno", idTurno);
-        JsonObject jsonActivaciones = DAOEmergencia.getActivacionesPorTurno(jsonInputTurno.build());
+        JsonObject jsonActivaciones = JsonParser.stringToJson(DAOEmergencia.getActivacionesPorTurno(jsonInputTurno.build().toString()));
 
         List<Activacion> activaciones = new ArrayList<>();
 
@@ -58,7 +59,7 @@ public class ControladorCUConsultarEmergencias {
 
         for (JsonObject jsonActivacion : jsonArrayActivaciones.getValuesAs(JsonObject.class)) {
             if (jsonActivacion.containsKey("IDTurnoOperativo") && jsonActivacion.getInt("IDTurnoOperativo") == -1) {
-                continue; // Skip if it's the marker for no results
+                continue; 
             }
             int id = jsonActivacion.getInt("ID");
             Fecha fechaActivacion = Fecha.parseFecha(jsonActivacion.getString("FechaActivacion"));
@@ -69,12 +70,12 @@ public class ControladorCUConsultarEmergencias {
         return activaciones;
     }
 
-    public void getDetallesActivacion(Activacion a) throws SQLException {
+    public void getDetallesActivacion(Activacion a) throws SQLException, Exception {
         JsonObjectBuilder jsonInputActivacion = Json.createObjectBuilder();
         jsonInputActivacion.add("idActivacion", a.getId());
-        JsonObject jsonActivaciones = DAOEmergencia.getDetallesActivaciones(jsonInputActivacion.build());
+        JsonObject jsonActivaciones = JsonParser.stringToJson(DAOEmergencia.getDetallesActivaciones(jsonInputActivacion.build().toString()));
         if (jsonActivaciones.containsKey("IDActivacion") && jsonActivaciones.getInt("IDActivacion") == -1) {
-            System.out.println("Aucune activation trouvée pour l'ID spécifié.");
+            throw new Exception("No hay detalles para esa activacion.");
         } else {
             String descripcionDeLaEmergencia = jsonActivaciones.getString("DescripcionDeLaEmergencia", null);
             String nombreVia = jsonActivaciones.getString("nombreVia", null);

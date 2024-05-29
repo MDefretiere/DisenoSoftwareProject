@@ -73,9 +73,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="OK"/>
       </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jButton1.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        // R&#xe9;cup&#xe9;rer la fen&#xea;tre parent et la fermer&#xa;        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(jButton1);&#xa;        if (parentWindow != null) {&#xa;            parentWindow.dispose();&#xa;        }&#xa;    }&#xa;});"/>
-      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

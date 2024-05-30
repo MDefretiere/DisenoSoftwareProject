@@ -55,16 +55,9 @@ public class CtrlVistaModificarOperadorEnTurno {
         return list;
     }
 
-    public List<Empleado> getOperadoresDispo(Object selectedItem) throws Exception {
+    public List<Empleado> getOperadoresDispo(String nif) throws Exception {
         List<Empleado> dispos;
-        if (selectedItem != null) {
-            Pattern pattern = Pattern.compile("NIF:(\\w+)");
-            Matcher matcher = pattern.matcher(selectedItem.toString());
-            String nif=null;
-            if (matcher.find()) {
-                nif = matcher.group(1);
-            } else {
-            }
+        if (nif != null) {
             dispos = controladorCU.getOperadoresDisponibles(nif);
             return dispos;
         } else {
@@ -73,15 +66,8 @@ public class CtrlVistaModificarOperadorEnTurno {
         }
     }
 
-    public void modificarOperadorEnTurno(Object selectedItem) throws Exception {
-        if (selectedItem != null) {
-            Pattern pattern = Pattern.compile("NIF:(\\w+)");
-            Matcher matcher = pattern.matcher(selectedItem.toString());
-            String nif=null;
-            if (matcher.find()) {
-                nif = matcher.group(1);
-            } else {
-            }
+    public void modificarOperadorEnTurno(String nif) throws Exception {
+        if (nif != null) {
             controladorCU.modificarOperadorEnTurno(nif);
         } else {
             CtrlVistaInformacion.mostrarInformacion("No empleado seleccionado");

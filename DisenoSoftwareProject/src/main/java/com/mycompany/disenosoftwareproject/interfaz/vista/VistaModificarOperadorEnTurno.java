@@ -10,13 +10,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author defre
  */
 public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
+
     private CtrlVistaModificarOperadorEnTurno controladorVista = CtrlVistaModificarOperadorEnTurno.getInstance();
+
     /**
      * Creates new form VistaModificarOperadorEnTurno
      */
@@ -137,7 +141,17 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    controladorVista.modificarOperadorEnTurno(jComboBox2.getSelectedItem());
+                    String nif = null;
+                    if (jComboBox2.getSelectedItem() != null) {
+                        Pattern pattern = Pattern.compile("NIF:(\\w+)");
+                        Matcher matcher = pattern.matcher(jComboBox2.getSelectedItem().toString());
+                        if (matcher.find()) {
+                            nif = matcher.group(1);
+                        }
+                    }
+                    if(nif!=null){
+                        controladorVista.modificarOperadorEnTurno(nif);
+                    }
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     System.out.println(ex.getCause());
@@ -176,21 +190,31 @@ public class VistaModificarOperadorEnTurno extends javax.swing.JFrame {
         });
         jButton3.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 try {
-                    List<Empleado> operadoresDispo = controladorVista.getOperadoresDispo(jComboBox1.getSelectedItem());
-                    jComboBox2.removeAllItems();
-                    if (!operadoresDispo.isEmpty()) {
-                        for (Empleado emp : operadoresDispo) {
-                            jComboBox2.addItem(emp.getNombre() + " " + emp.getApellidos()+", NIF:"+emp.getNif()+", Telefono:"+emp.getTelefono());
+                    String nif = null;
+                    if (jComboBox1.getSelectedItem() != null) {
+                        Pattern pattern = Pattern.compile("NIF:(\\w+)");
+                        Matcher matcher = pattern.matcher(jComboBox1.getSelectedItem().toString());
+                        if (matcher.find()) {
+                            nif = matcher.group(1);
                         }
-                        jButton1.setEnabled(true);
                     }
-                    else{
-                        jComboBox2.addItem("No operadores disponibles");
-                        jButton1.setEnabled(false);
+                    if (nif != null) {
+                        List<Empleado> operadoresDispo = controladorVista.getOperadoresDispo(nif);
+                        jComboBox2.removeAllItems();
+                        if (!operadoresDispo.isEmpty()) {
+                            for (Empleado emp : operadoresDispo) {
+                                jComboBox2.addItem(emp.getNombre() + " " + emp.getApellidos() + ", NIF:" + emp.getNif() + ", Telefono:" + emp.getTelefono());
+                            }
+                            jButton1.setEnabled(true);
+                        } else {
+                            jComboBox2.addItem("No operadores disponibles");
+                            jButton1.setEnabled(false);
+                        }
+                        jComboBox2.setEnabled(true);
                     }
-                    jComboBox2.setEnabled(true);
+
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     System.out.println(ex.getCause());

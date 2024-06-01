@@ -1,14 +1,37 @@
+DROP TABLE CONDUCTORESENTURNO;
+DROP TABLE MEDICOSENTURNO;
+DROP TABLE CONSEJOS;
+DROP TABLE LLAMADASNOCRITICAS;
+DROP TABLE ACTIVACIONESDEOPERATIVOS;
+DROP TABLE OPERATIVOS;
+DROP TABLE VEHICULOS;
+DROP TABLE MODELOS;
+DROP TABLE MARCAS;
+DROP TABLE ESTADOSDEVEHICULO;
+DROP TABLE CONSULTORIOS;
+DROP TABLE ESTADOSDEOPERATIVO;
+DROP TABLE DECISIONESDETRASLADOAHOSPITAL;
+DROP TABLE HOSPITALES;
+DROP TABLE DIRECCIONES;
+DROP TABLE LLAMADASCRITICAS;
+DROP TABLE LLAMADASASEGURADOS;
+DROP TABLE LLAMADASINFUNDADAS;
+DROP TABLE LLAMADAS;
+DROP TABLE POLIZASCONTRATADAS;
+DROP TABLE ASEGURADOS;
+DROP TABLE POLIZAS;
 DROP TABLE OPERADORESENTURNO;
-DROP TABLE DISPONIBILIDADEMPLEADO;
-DROP TABLE  VINCULACIONCONLAEMPRESA;
-DROP TABLE ROLESENLAEMPRESA;
 DROP TABLE TURNODEOPERADOR;
 DROP TABLE TIPODETURNODEOPERADOR;
+DROP TABLE DISPONIBILIDADEMPLEADO;
+DROP TABLE VINCULACIONCONLAEMPRESA;
+DROP TABLE ROLESENLAEMPRESA;
 DROP TABLE EMPLEADO;
-DROP TABLE ROLEMPLEADO;
-DROP TABLE ESTADODELVINCULO;
 DROP TABLE ESTADODEDISPONIBILIDAD;
-
+DROP TABLE ESTADODELVINCULO;
+DROP TABLE ROLEMPLEADO;
+DROP TABLE TURNOSDEOPERATIVO;
+DROP TABLE TIPOSDETURNODEOPERATIVO;
 
 -- Enum
 CREATE TABLE ROLEMPLEADO (
@@ -19,8 +42,8 @@ CREATE TABLE ROLEMPLEADO (
 
 INSERT INTO ROLEMPLEADO VALUES  
     (1,'Gerente'),
-    (2,'Conductor'),
-    (3,'Operador'),
+    (2,'Operador'),
+    (3,'Conductor'),
     (4, 'Medico');
 
 -- Enum
@@ -61,6 +84,15 @@ CREATE TABLE EMPLEADO (
     PRIMARY KEY(NifCif)
 );
 
+INSERT INTO EMPLEADO (NifCif, Nombre, FechaInicioEnEmpresa, DireccionPostal, DireccionElectronica, Telefono, Password, FechaNacimiento, Apellido) VALUES 
+    ('123456789','John','2023-01-01','123, Main St, WC1R, London, England','john@example.com','123456789','password123', '1983-09-12', 'Doe'),
+    ('987654321','Jane Smith','2022-12-01','456, Oak St, WC1R, London, England','jane@example.com','987654321','password456', '1989-04-02', 'Doe');
+
+INSERT INTO EMPLEADO (NifCif, Nombre, Apellido, FechaInicioEnEmpresa, DireccionPostal, DireccionElectronica, FechaNacimiento, Telefono, Password) VALUES
+    ('123456780', 'Alice', 'Smith', '2024-05-01', '789, Pine St, WC1R, London, England', 'alice@example.com', '1990-01-15', '123456788', 'password789'),
+    ('123456781', 'Bob', 'Brown', '2024-05-01', '101, Birch St, WC1R, London, England', 'bob@example.com', '1985-02-20', '123456787', 'password790'),
+    ('123456782', 'Charlie', 'Johnson', '2024-05-01', '202, Cedar St, WC1R, London, England', 'charlie@example.com', '1992-03-25', '123456786', 'password791');
+
 -- Relation
 CREATE TABLE ROLESENLAEMPRESA (
     NifCif VARCHAR(9) NOT NULL,
@@ -89,6 +121,13 @@ CREATE TABLE DISPONIBILIDADEMPLEADO (
     FOREIGN KEY(Estado) REFERENCES ESTADODEDISPONIBILIDAD(IdEstado)
 );
 
+INSERT INTO DISPONIBILIDADEMPLEADO (Comienzo, Empleado, Estado) VALUES
+	('2023-01-01', '123456789', 1),
+	('2023-01-01', '987654321', 1),
+	('2023-01-01', '123456780', 1),
+	('2023-01-01', '123456781', 2),
+	('2023-01-01', '123456782', 1);
+
 CREATE TABLE TIPODETURNODEOPERADOR (
     IdTipoTurno SMALLINT NOT NULL,
     NombreTipoTurno VARCHAR(20) NOT NULL,
@@ -116,50 +155,347 @@ CREATE TABLE OPERADORESENTURNO (
     FOREIGN KEY(IdTurnoOperador) REFERENCES TURNODEOPERADOR(IdTurnoOperador)
 );
 
-INSERT INTO EMPLEADO (NifCif, Nombre, FechaInicioEnEmpresa, DireccionPostal, DireccionElectronica, Telefono, Password, FechaNacimiento, Apellido) VALUES 
-    ('123456789','John','2023-01-01','123, Main St, WC1R, London, England','john@example.com','123456789','password123', '1983-09-12', 'Doe'),
-    ('564321978','Mathew','2023-01-01','23, Obama St, WC1R, Paris, France','mathew@example.com','065439218','password932', '1993-08-12', 'Alonso'),
-    ('432156879','Dann','2023-01-01','21, York St, WC1R, Madrid, Espana','Dann@example.com','451234096','password351', '1978-06-16', 'Martin'),
-    ('987654321','Jane Smith','2022-12-01','456, Oak St, WC1R, London, England','jane@example.com','987654321','password456', '1989-04-02', 'Grand');
-
 INSERT INTO ROLESENLAEMPRESA (NifCif, Rol, ComienzoEnRol) VALUES 
-    ('123456789',3,'2023-01-01'),
+    ('123456789',2,'2023-01-01'),
     ('987654321',3,'2022-12-01'),
-    ('564321978',3,'2023-02-01'),
-    ('432156879',3,'2023-02-01');
+    ('123456780',4,'2024-05-01'),
+    ('123456781',2,'2024-05-01'),
+    ('123456782',1,'2024-05-01');
+
 
 INSERT INTO VINCULACIONCONLAEMPRESA (Fecha, Empleado, Estado) VALUES 
     ('2023-01-01','123456789',1),
     ('2022-12-01','987654321',1),
-    ('2023-02-01','123456789',1),
-    ('2023-02-01','564321978',1),
-    ('2023-02-01','432156879',1);
-
-INSERT INTO DISPONIBILIDADEMPLEADO (Comienzo, FinalPrevisto, Empleado, Estado) VALUES 
-    ('2023-01-01','2023-01-05','123456789',1),
-    ('2022-12-01','2022-12-10','987654321',1),
-    ('2023-02-01','2023-02-10','123456789',1),
-    ('2023-02-01','2023-02-10','564321978',1),
-    ('2023-02-01','2023-02-10','432156879',1);
+    ('2024-05-01','123456780', 1),
+    ('2024-05-01','123456781', 1),
+    ('2024-05-01','123456782', 1);
 
 INSERT INTO TURNODEOPERADOR (IdTurnoOperador, FechaTurno, FechaCreacion, TipoTurno) VALUES 
     (1, '2024-05-01', '2023-01-01', 1),
     (2, '2024-05-02', '2023-01-01', 2),
     (3, '2024-05-03', '2023-01-01', 3),
-    (4, '2024-05-04', '2023-03-01', 1),
-    (5, '2024-05-05', '2023-03-01', 2),
-    (6, '2024-05-06', '2023-03-01', 3);
+    (4, '2024-05-04', '2023-01-01', 1),
+    (5, '2024-05-05', '2023-01-01', 1),
+    (6, '2024-06-01', '2023-01-01', 1);
 
-INSERT INTO OPERADORESENTURNO(NifCif, IdTurnoOperador) VALUES
+
+INSERT INTO OPERADORESENTURNO (NifCif, IdTurnoOperador) VALUES
     ('123456789', 1),
-    ('123456789', 3),
+    ('987654321', 1),
     ('987654321', 2),
-    ('987654321', 3),
-    ('564321978', 5),
-    ('432156879', 6),
-    ('987654321', 4),
-    ('432156879', 3),
+    ('123456782', 2),
+    ('123456780', 3),
+    ('123456781', 3),
+    ('123456782', 4),
     ('123456789', 4),
-    ('564321978', 1),
-    ('432156879', 2);
+    ('987654321', 5),
+    ('123456781', 5),
+    ('123456789', 6),
+    ('123456780', 6);
 
+
+CREATE TABLE POLIZAS (
+    NumeroPoliza VARCHAR(15) NOT NULL,
+    FechaInicio DATE,
+    FechaVencimiento DATE,
+    PRIMARY KEY (NumeroPoliza)
+);
+
+INSERT INTO POLIZAS (NumeroPoliza, FechaInicio, FechaVencimiento) VALUES
+    ('POL123456789', '2023-01-01', '2024-01-01'),
+    ('POL987654321', '2022-02-15', '2023-02-15'),
+    ('POL456789123', '2021-03-30', '2022-03-30');
+
+CREATE TABLE ASEGURADOS (
+    NifCif VARCHAR(9) NOT NULL,
+    Nombre VARCHAR(30) NOT NULL,
+    Apellidos VARCHAR(30) NOT NULL,
+    DireccionPostal VARCHAR(100),
+    DireccionElectronica VARCHAR(30),
+    FechaNacimiento DATE,
+    NumeroDeCuenta VARCHAR(24),
+    Sexo VARCHAR(10),
+    Telefono VARCHAR(9),
+    PRIMARY KEY(NifCif)
+);
+
+INSERT INTO ASEGURADOS (NifCif, Nombre, Apellidos, DireccionPostal, DireccionElectronica, FechaNacimiento, NumeroDeCuenta, Telefono, Sexo) VALUES
+    ('596531457', 'Carlos', 'Perez', '789, Pine St, WC1R, London, England', 'carlos@example.com', '1980-05-12', 'ES9121000418450200051332', '123456789', 'hombre'),
+    ('514387890', 'Maria', 'Gomez', '456, Oak St, WC1R, London, England', 'maria@example.com', '1992-11-20', 'ES9121000418450200051345', '987654321', 'mujer'),
+    ('468219582', 'Lucia', 'Garcia', '123, Elm St, WC1R, London, England', 'lucia@example.com', '1985-07-15', 'ES9121000418450200051356', '456789123', 'mujer'),
+    ('785321937', 'Miguel', 'Lopez', '321, Maple St, WC1R, London, England', 'miguel@example.com', '1978-03-10', 'ES9121000418450200051367', '789123456', 'hombre');
+
+
+
+CREATE TABLE POLIZASCONTRATADAS(
+    Asegurado VARCHAR(9) NOT NULL,
+    Poliza VARCHAR(15) NOT NULL,
+    FOREIGN KEY(Asegurado) REFERENCES ASEGURADOS(NifCif),
+    FOREIGN KEY(Poliza) REFERENCES POLIZAS(NumeroPoliza)
+);
+
+INSERT INTO POLIZASCONTRATADAS (Asegurado, Poliza) VALUES
+    ('596531457', 'POL123456789'),
+    ('514387890', 'POL987654321'),
+    ('468219582', 'POL456789123'),
+    ('785321937', 'POL987654321');
+
+
+CREATE TABLE LLAMADAS (
+    ID INT NOT NULL,
+    NumeroTelefonoOrigen VARCHAR(12) NOT NULL,
+    FechaInicio DATE NOT NULL,
+    HoraInicio TIME NOT NULL,
+    FechaFin DATE NOT NULL,
+    HoraFin TIME NOT NULL,
+    NombreComunicante VARCHAR(100),
+    PRIMARY KEY (ID)
+);
+
+CREATE TABLE LLAMADASINFUNDADAS(
+    ID INT NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (ID) REFERENCES LLAMADAS(ID)
+);
+
+
+CREATE TABLE LLAMADASASEGURADOS(
+    ID INT NOT NULL,
+    DescripcionDeLaEmergencia VARCHAR(255) NOT NULL,
+    Paciente VARCHAR(9) NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (ID) REFERENCES LLAMADAS(ID),
+    FOREIGN KEY (Paciente) REFERENCES ASEGURADOS(NIFCIF)
+);
+
+
+CREATE TABLE LLAMADASCRITICAS(
+    ID INT NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (ID) REFERENCES LLAMADASASEGURADOS(ID)
+);
+
+CREATE TABLE DIRECCIONES(
+    Id SMALLINT NOT NULL,
+    Numero INT NOT NULL,
+    NombreVia VARCHAR(255),
+    CodigoPostal VARCHAR(12),
+    Localidad VARCHAR(30),
+    Provincia VARCHAR(40),
+    PRIMARY KEY(Id)
+);
+
+INSERT INTO DIRECCIONES (Id, Numero, NombreVia, CodigoPostal, Localidad, Provincia) VALUES
+    (1, 221, 'B Baker Street', 'NW1 6XE', 'London', 'Greater London'),
+    (2, 10, 'Downing Street', 'SW1A 2AA', 'London', 'Greater London'),
+    (3, 1600, 'Pennsylvania Avenue NW', '20500', 'Washington', 'DC');
+
+
+CREATE TABLE HOSPITALES(
+    Id INT,
+    Nombre VARCHAR(50),
+    Direccion SMALLINT,
+    PRIMARY KEY(Id),
+    FOREIGN KEY (Direccion) REFERENCES DIRECCIONES(Id)
+);
+
+INSERT INTO HOSPITALES (Id, Nombre, Direccion) VALUES
+    (1, 'Hospital de Valladolid', 2);
+
+CREATE TABLE DECISIONESDETRASLADOAHOSPITAL(
+    Id INT,
+    FechaInicioTraslado DATE,
+    HoraInicioTraslado TIME,
+    DestinoDeTraslado INT,
+    PRIMARY KEY (Id),
+    FOREIGN KEY (DestinoDeTraslado) REFERENCES HOSPITALES(Id)
+);
+
+INSERT INTO DECISIONESDETRASLADOAHOSPITAL (Id, FechaInicioTraslado, HoraInicioTraslado, DestinoDeTraslado) VALUES
+    (1, '2024-05-15', '13:00:00', 1);
+
+CREATE TABLE ESTADOSDEOPERATIVO(
+    IdEstado SMALLINT,
+    NombreEstado VARCHAR(20),
+    PRIMARY KEY(IdEstado)
+);
+
+INSERT INTO ESTADOSDEOPERATIVO (IdEstado, NombreEstado) VALUES
+	(1, 'Disponible'),
+	(2, 'Activado'),
+	(3, 'Bloqueado');
+
+CREATE TABLE CONSULTORIOS(
+    Id SMALLINT NOT NULL,
+    Direccion SMALLINT NOT NULL,
+    PRIMARY KEY (Id),
+    FOREIGN KEY (Direccion) REFERENCES DIRECCIONES(Id)
+);
+
+CREATE TABLE ESTADOSDEVEHICULO(
+    IDEstado SMALLINT,
+    NombreEstado VARCHAR(20),
+    PRIMARY KEY(IDEstado)
+);
+
+INSERT INTO ESTADOSDEVEHICULO (IDEstado, NombreEstado) VALUES
+    (1, 'EnServicio'),
+    (2, 'EnTaller'),
+    (3, 'DeBaja');
+
+CREATE TABLE MARCAS(
+    Id SMALLINT,
+    Nombre VARCHAR(20),
+    PRIMARY KEY(Id)
+);
+
+INSERT INTO MARCAS (Id, Nombre) VALUES
+    (1, 'Ford'),
+    (2, 'Toyota'),
+    (3, 'Honda');
+
+CREATE TABLE MODELOS(
+    Id SMALLINT,
+    Nombre VARCHAR(20),
+    Marca SMALLINT,
+    PRIMARY KEY(Id),
+    FOREIGN KEY (Marca) REFERENCES MARCAS(Id)
+);
+
+INSERT INTO MODELOS (Id, Nombre, Marca) VALUES
+    (1, 'Fiesta', 1),
+    (2, 'Camry', 2),
+    (3, 'Civic', 3);
+
+CREATE TABLE VEHICULOS(
+    Matricula VARCHAR(8),
+    UbicacionLatitud REAL,
+    UbicacionLongitud REAL,
+    FechaAlta Date,
+    Estado SMALLINT,
+    Modelo SMALLINT,
+    PRIMARY KEY(Matricula),
+    FOREIGN KEY(Estado) REFERENCES ESTADOSDEVEHICULO(IdEstado),
+    FOREIGN KEY(Modelo) REFERENCES MODELOS(Id)
+);
+
+INSERT INTO VEHICULOS (Matricula, UbicacionLatitud, UbicacionLongitud, FechaAlta, Estado, Modelo) VALUES
+    ('AB-1234', 51.509865, -0.118092, '2023-01-01', 1, 1),  
+    ('AB-3214', 34.052235, -118.243683, '2023-02-15', 1, 2), 
+    ('AB-6572', 40.712776, -74.005974, '2023-03-10', 1, 3);
+
+CREATE TABLE TIPOSDETURNODEOPERATIVO(
+    IdTipo SMALLINT,
+    NombreTipo VARCHAR(20),
+    PRIMARY KEY(IdTipo)
+);
+
+INSERT INTO TIPOSDETURNODEOPERATIVO (IdTipo, NombreTipo) VALUES 
+	(1, 'DeManana7'),
+	(2, 'DeNoche19');
+
+CREATE TABLE TURNOSDEOPERATIVO(
+    Id INT,
+    FechaTurno DATE,
+    FechaCreacion DATE,
+    TipoDeTurno SMALLINT,
+    PRIMARY KEY(Id),
+    FOREIGN KEY (TipoDeTurno) REFERENCES TIPOSDETURNODEOPERATIVO(IdTipo)
+);
+
+CREATE TABLE OPERATIVOS(
+    Id INT NOT NULL,
+    FechaCreacion DATE,
+    Estado SMALLINT,
+    Turno INT, 
+    Base SMALLINT,
+    Vehiculo VARCHAR(8),
+    CONDUCTOR VARCHAR(9),
+    Medico VARCHAR(9),
+    PRIMARY KEY (Id),
+    FOREIGN KEY (Estado) REFERENCES ESTADOSDEOPERATIVO(IdEstado),
+    FOREIGN KEY (Turno) REFERENCES TURNOSDEOPERATIVO(Id),
+    FOREIGN KEY (Base) REFERENCES CONSULTORIOS(Id),
+    FOREIGN KEY (Vehiculo) REFERENCES VEHICULOS(Matricula),
+    FOREIGN KEY (CONDUCTOR) REFERENCES EMPLEADO(NIFCIF),
+    FOREIGN KEY (Medico) REFERENCES EMPLEADO(NIFCIF)
+);
+
+CREATE TABLE ACTIVACIONESDEOPERATIVOS(
+    ID INT,
+    DireccionDondeAcudir SMALLINT,
+    FechaActivacion DATE,
+    HoraActivacion TIME,
+    OperativoActivado INT,
+    FechaSeHaceCargoMedico DATE,
+    HoraSeHaceCargoMedico TIME,
+    FechaCierre DATE,
+    HoraCierre TIME,
+    DecisionTrasladoAHospital INT,
+    PRIMARY KEY(ID),
+    FOREIGN KEY (DireccionDondeAcudir) REFERENCES DIRECCIONES(Id),
+    FOREIGN KEY (DecisionTrasladoAHospital) REFERENCES DECISIONESDETRASLADOAHOSPITAL(Id),
+    FOREIGN KEY (OperativoActivado) REFERENCES OPERATIVOS(Id)
+);
+
+CREATE TABLE LLAMADASNOCRITICAS(
+    ID INT NOT NULL,
+    EsLeve BOOLEAN NOT NULL,
+    RequiereOperativo INT,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (ID) REFERENCES LLAMADASASEGURADOS(ID),
+    FOREIGN KEY (RequiereOperativo) REFERENCES ACTIVACIONESDEOPERATIVOS(ID)
+);
+
+CREATE TABLE CONSEJOS(
+    Descripcion VARCHAR(255),
+    Resultado VARCHAR(255),
+    Soluciona BOOLEAN NOT NULL,
+    Llamada INT NOT NULL,
+    FOREIGN KEY (Llamada) REFERENCES LLAMADASNOCRITICAS(ID)
+);
+
+CREATE TABLE CONDUCTORESENTURNO(
+    Turno INT,
+    Conductor VARCHAR(9),
+    FOREIGN KEY(Turno) REFERENCES TURNOSDEOPERATIVO(Id),
+    FOREIGN KEY(Conductor) REFERENCES Empleado(NIFCIF)
+);
+
+CREATE TABLE MEDICOSENTURNO(
+    Turno INT,
+    Medico VARCHAR(9),
+    FOREIGN KEY(Turno) REFERENCES TURNOSDEOPERATIVO(Id),
+    FOREIGN KEY(Medico) REFERENCES Empleado(NIFCIF)
+);
+
+
+INSERT INTO CONSULTORIOS (Id, Direccion) VALUES
+	(1, 1);
+
+INSERT INTO TURNOSDEOPERATIVO (ID, FechaTurno, FechaCreacion, TipoDeTurno) VALUES
+	(1, '2024-05-15', '2024-05-01', 1);
+
+INSERT INTO CONDUCTORESENTURNO (Turno, Conductor) VALUES
+	(1, '987654321');
+
+INSERT INTO MEDICOSENTURNO (Turno, Medico) VALUES
+	(1, '123456780');
+
+INSERT INTO OPERATIVOS (Id, FechaCreacion, Estado, Turno, Base, Vehiculo, CONDUCTOR, Medico) VALUES
+    (1, '2024-05-01', 1, 1, 1, 'AB-1234', '987654321', '123456780');
+
+
+INSERT INTO ACTIVACIONESDEOPERATIVOS (ID, DireccionDondeAcudir, FechaActivacion, HoraActivacion, OperativoActivado, FechaSeHaceCargoMedico, HoraSeHaceCargoMedico, FechaCierre, HoraCierre, DecisionTrasladoAHospital) VALUES
+    (1, 1, '2024-05-15', '12:30:00', 1, '2024-05-15', '13:00:00', '2024-05-15', '14:00:00', 1);
+
+
+
+INSERT INTO LLAMADAS (ID, NumeroTelefonoOrigen, FechaInicio, HoraInicio, FechaFin, HoraFin, NombreComunicante) 
+VALUES (1, '679548371', '2024-05-15', '12:30:00', '2024-05-15', '13:00:00', 'Pablo');
+
+INSERT INTO LLAMADASASEGURADOS (ID, DescripcionDeLaEmergencia, Paciente) 
+VALUES (1, 'This is the descripcion of the emergency !', '596531457');
+
+INSERT INTO LLAMADASNOCRITICAS (ID, EsLeve, RequiereOperativo) 
+VALUES (1, TRUE, 1);

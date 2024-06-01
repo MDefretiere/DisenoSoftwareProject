@@ -62,7 +62,7 @@ public class DAOEmergencia {
         }
         turnoBuilder.add("activaciones", activacionesArrayBuilder);
         JsonObject json = turnoBuilder.build();
-        if(json==null){
+        if (json == null) {
             return null;
         }
         return json.toString();
@@ -92,12 +92,21 @@ public class DAOEmergencia {
                         .add("fechaSeHaceCargoMedico", resultSet.getString("FechaSeHaceCargoMedico"))
                         .add("horaSeHaceCargoMedico", resultSet.getString("HoraSeHaceCargoMedico"))
                         .add("decisionTrasladoAHospital", resultSet.getInt("DecisionTrasladoAHospital"));
+                while (resultSet.next()) {
+                    activacionBuilder = null;
+                    activacionBuilder = Json.createObjectBuilder();
+                    activacionBuilder.add("DescripcionDeLaEmergencia", resultSet.getString("DescripcionDeLaEmergencia"))
+                            .add("nombreVia", resultSet.getString("nombreVia"))
+                            .add("fechaSeHaceCargoMedico", resultSet.getString("FechaSeHaceCargoMedico"))
+                            .add("horaSeHaceCargoMedico", resultSet.getString("HoraSeHaceCargoMedico"))
+                            .add("decisionTrasladoAHospital", resultSet.getInt("DecisionTrasladoAHospital"));
+                }
             } else {
                 activacionBuilder.add("IDActivacion", -1);
             }
         }
         JsonObject json = activacionBuilder.build();
-        if(json==null){
+        if (json == null) {
             return null;
         }
         return json.toString();

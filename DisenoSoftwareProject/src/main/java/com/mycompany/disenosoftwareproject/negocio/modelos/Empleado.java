@@ -14,7 +14,7 @@ import javax.json.JsonObjectBuilder;
 
 /**
  *
- * @author defre
+ * @author el_pouleto
  */
 public class Empleado extends Persona {
 

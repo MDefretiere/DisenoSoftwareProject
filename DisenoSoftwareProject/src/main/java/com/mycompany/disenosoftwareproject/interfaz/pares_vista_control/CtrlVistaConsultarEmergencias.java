@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class CtrlVistaConsultarEmergencias {
     private static CtrlVistaConsultarEmergencias controlador = new CtrlVistaConsultarEmergencias();

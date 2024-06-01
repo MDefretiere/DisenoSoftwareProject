@@ -6,7 +6,7 @@ package com.mycompany.disenosoftwareproject.interfaz.vista;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class VistaInformacion extends javax.swing.JFrame {
 

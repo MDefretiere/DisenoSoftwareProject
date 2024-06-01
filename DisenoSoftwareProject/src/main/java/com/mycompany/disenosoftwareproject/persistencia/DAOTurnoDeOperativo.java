@@ -18,7 +18,7 @@ import serviciosComunes.JsonParser;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class DAOTurnoDeOperativo {
 

@@ -6,7 +6,7 @@ package com.mycompany.disenosoftwareproject.negocio.modelos;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class Activacion {
     private int id;

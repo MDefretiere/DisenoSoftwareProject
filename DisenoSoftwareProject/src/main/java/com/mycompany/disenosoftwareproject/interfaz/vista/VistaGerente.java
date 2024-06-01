@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author defre
+ * @author el_pouleto
  */
 public class VistaGerente extends javax.swing.JFrame {
     private CtrlVistaIdentificarse controlador = CtrlVistaIdentificarse.getInstance();

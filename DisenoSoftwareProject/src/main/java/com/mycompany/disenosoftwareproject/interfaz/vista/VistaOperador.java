@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 /**
  *
- * @author defre
+ * @author el_pouleto
  */
 public class VistaOperador extends javax.swing.JFrame {
     private CtrlVistaIdentificarse controlador = CtrlVistaIdentificarse.getInstance();

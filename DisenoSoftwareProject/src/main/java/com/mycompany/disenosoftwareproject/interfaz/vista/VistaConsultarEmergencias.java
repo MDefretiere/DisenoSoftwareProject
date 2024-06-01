@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class VistaConsultarEmergencias extends javax.swing.JFrame {
     CtrlVistaConsultarEmergencias controlador = CtrlVistaConsultarEmergencias.getInstance();

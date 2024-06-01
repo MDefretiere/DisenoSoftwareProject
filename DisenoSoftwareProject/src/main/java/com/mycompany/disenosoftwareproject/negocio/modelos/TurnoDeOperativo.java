@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author defre
+ * @author younrm
  */
 public class TurnoDeOperativo {
     private Fecha fechaCreacion;

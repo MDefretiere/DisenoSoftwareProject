@@ -22,7 +22,7 @@ import serviciosComunes.JsonParser;
 
 /**
  *
- * @author younrm
+ * @author defre
  */
 public class ControladorCUConsultarEmergencias {
     private static ControladorCUConsultarEmergencias controlador = new ControladorCUConsultarEmergencias();

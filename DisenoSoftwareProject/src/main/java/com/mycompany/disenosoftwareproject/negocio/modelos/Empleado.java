@@ -62,10 +62,6 @@ public class Empleado extends Persona {
         return historicoDeDisponiblidad;
     }
     
-    
-    
-    
-
     public static Empleado jsonToEmpleado(JsonObject jsonEmpleado) throws Exception {
         String nif = jsonEmpleado.getString("nif");
         String nombre = jsonEmpleado.getString("nombre");
@@ -100,6 +96,4 @@ public class Empleado extends Persona {
 
         return new Empleado(nombre, apellidos, fechaNacimiento, nif, direccion, telefono, fechaInicioEnEmpresa, rol);
     }
-
-
 }

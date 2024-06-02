@@ -13,7 +13,7 @@ import javax.json.JsonValue;
 
 
 /**
- * Auteur: defre
+ * @author defre
  */
 public class TurnoDeOperador {
     private int idTurno;

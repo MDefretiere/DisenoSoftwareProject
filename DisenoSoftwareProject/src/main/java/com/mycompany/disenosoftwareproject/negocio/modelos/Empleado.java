@@ -35,7 +35,7 @@ public class Empleado extends Persona {
     }
     
     public boolean estaActivo(){
-        return false; ////A FAIRE
+        return false;
     }
     
     public Rol obtenerRolActual(){

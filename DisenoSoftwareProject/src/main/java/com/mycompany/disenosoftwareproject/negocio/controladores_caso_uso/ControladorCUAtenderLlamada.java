@@ -133,6 +133,10 @@ public class ControladorCUAtenderLlamada {
         }
         paciente = comprobarAsegurado(nombre, apellidos, fechaNacimiento, sexo);
         if(paciente==null){
+            fechaFinLlamada = Fecha.getFechaActual();
+            horaFinLlamada = Hora.getCurrentHora();
+            LlamadaInfundada llamadaInfundada = new LlamadaInfundada(idLlamada, telefonoLlamada, fechaInicioLlamada, horaInicioLlamada, fechaFinLlamada, horaFinLlamada, nombreComunicante, operadorEnTurno);
+            grabarNuevaLlamada(llamadaInfundada);
             throw new Exception("ERROR : la persona indicada en el formulario no es asegurada.");
         }
         boolean checkPacientePoliza = comprobarPacienteConPoliza(paciente.getNif(), poliza.getNumero());
